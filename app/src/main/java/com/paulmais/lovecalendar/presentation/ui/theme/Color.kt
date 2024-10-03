@@ -1,11 +1,26 @@
 package com.paulmais.lovecalendar.presentation.ui.theme
 
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val Cameo = Color(0xFFDDBEA7)
+val Iron = Color(0xFFE4E6E8)
+val Perano = Color(0xFFAACEF5)
+val Sidecar = Color(0xFFF3DFC1)
+val Sindbad = Color(0xFFA1D2CD)
+val WildSand = Color(0xFFF5F5F5)
+val Cornflower_Lilac = Color(0xFFFFACAC)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val pastMeetingColor = Perano
+val futureMeetingColor = Sindbad
+val specialColor = Cornflower_Lilac
+
+val appLightColors = lightColorScheme(
+    primary = Sidecar,
+    secondary = Cameo,
+    background = Iron,
+    surface = WildSand,
+    onSurface = Color.Black
+)
+
+val appDarkColors = appLightColors
