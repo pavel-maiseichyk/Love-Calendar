@@ -107,11 +107,7 @@ fun MonthItem(
 }
 
 private fun calculateDaySize(base: Dp): Dp {
-    // Both sides padding
-    val paddingHorizontal = 16.dp * 2
-    // Spacing between days in a row
-    val spacing = 8.dp * 6
-    return (base - paddingHorizontal - spacing) / 7
+    return (base - 16.dp * 4 - 1.dp * 2 - 8.dp * 6) / 7
 }
 
 @Preview
