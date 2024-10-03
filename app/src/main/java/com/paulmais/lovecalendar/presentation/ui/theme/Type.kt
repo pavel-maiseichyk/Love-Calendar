@@ -1,4 +1,4 @@
-package com.paulmais.lovecalendar.ui.theme
+package com.paulmais.lovecalendar.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
