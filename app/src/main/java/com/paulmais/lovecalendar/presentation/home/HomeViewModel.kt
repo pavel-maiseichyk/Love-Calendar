@@ -36,7 +36,7 @@ class HomeViewModel : ViewModel() {
                     AppDate(
                         LocalDate(
                             year = 2020,
-                            monthNumber = 1,
+                            monthNumber = 2,
                             dayOfMonth = day
                         )
                     )
