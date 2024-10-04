@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.paulmais.lovecalendar.presentation.home.components.HelperRow
 import com.paulmais.lovecalendar.presentation.home.components.MonthItem
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.androidx.compose.koinViewModel
@@ -42,7 +43,13 @@ private fun HomeScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
+
     ) {
+        HelperRow(
+            isInEditMode = state.isInEditMode,
+            daysLeftText = state.daysLeftText,
+            onAction = onAction
+        )
         MonthItem(
             isEditing = state.isInEditMode,
             isCurrent = true,

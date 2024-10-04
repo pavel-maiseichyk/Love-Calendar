@@ -46,7 +46,7 @@ class HomeViewModel : ViewModel() {
                 firstMonthEmptyDatesAmount = 2,
                 secondMonthEmptyDatesAmount = 1,
                 isInEditMode = false,
-                daysLeftText = "...",
+                daysLeftText = "24 days",
                 meetings = emptyList(),
                 isLoading = false,
                 today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
