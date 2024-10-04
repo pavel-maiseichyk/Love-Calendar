@@ -1,81 +1,190 @@
 package com.paulmais.lovecalendar.presentation.home
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.paulmais.lovecalendar.domain.model.AppDate
-import com.paulmais.lovecalendar.domain.use_case.FindFirstDayOfMonthPosition
-import com.paulmais.lovecalendar.domain.use_case.FindMonthEmptyDatesAmount
+import com.paulmais.lovecalendar.domain.model.DateType.*
+import com.paulmais.lovecalendar.domain.repository.MeetingsDataSource
 import com.paulmais.lovecalendar.domain.use_case.GenerateDates
 import com.paulmais.lovecalendar.domain.util.DateUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.datetime.Clock
+import kotlinx.coroutines.launch
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
-import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
 
 class HomeViewModel(
     private val generateDates: GenerateDates,
-    private val findFirstDayOfMonthPosition: FindFirstDayOfMonthPosition,
-    private val findMonthEmptyDatesAmount: FindMonthEmptyDatesAmount
+    private val meetingsDataSource: MeetingsDataSource
 ) : ViewModel() {
+
+    private var editedMeetings = mutableStateListOf<LocalDate>()
 
     private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()
 
     init {
-        _state.update {
-            val now = DateUtil.now()
-            val firstMonth = now.month
-            val secondMonth = now.plus(DatePeriod(months = 1)).month
-            val firstYear = now.year
-            val secondYear = now.plus(DatePeriod(months = 1)).year
+        snapshotFlow { editedMeetings.toList() }
+            .onEach { list ->
+                if (list.isNotEmpty()) updateDates(meetings = list)
+                else updateDates(state.value.meetings)
+            }
+            .launchIn(viewModelScope)
 
-            val firstMonthDates = generateDates.execute(
-                now = now, month = firstMonth, year = firstYear, meetings = emptyList()
-            )
-            val secondMonthDates = generateDates.execute(
-                now = now, month = secondMonth, year = secondYear, meetings = emptyList()
-            )
-
-            val firstMonthFirstDayOfWeekPosition = findFirstDayOfMonthPosition.execute(
-                month = firstMonth, year = firstYear
-            )
-            val secondMonthFirstDayOfWeekPosition = findFirstDayOfMonthPosition.execute(
-                month = secondMonth, year = secondYear
-            )
-
-            it.copy(
-                firstMonth = firstMonth,
-                secondMonth = secondMonth,
-                firstYear = firstYear,
-                secondYear = secondYear,
-                firstMonthDates = firstMonthDates,
-                secondMonthDates = secondMonthDates,
-                firstMonthFirstDayOfWeekPosition = firstMonthFirstDayOfWeekPosition,
-                secondMonthFirstDayOfWeekPosition = secondMonthFirstDayOfWeekPosition,
-                firstMonthEmptyDatesAmount = findMonthEmptyDatesAmount.execute(
-                    monthFirstDayOfWeekPosition = firstMonthFirstDayOfWeekPosition,
-                    monthDatesSize = firstMonthDates.size
-                ),
-                secondMonthEmptyDatesAmount = findMonthEmptyDatesAmount.execute(
-                    monthFirstDayOfWeekPosition = secondMonthFirstDayOfWeekPosition,
-                    monthDatesSize = secondMonthDates.size
-                )
-            )
-        }
+        meetingsDataSource.getMeetings().onEach { meetings ->
+            reloadHomeState(meetings = meetings)
+        }.launchIn(viewModelScope)
     }
 
     fun onAction(action: HomeAction) {
         when (action) {
-            HomeAction.OnConfirmEditClick -> TODO()
-            is HomeAction.OnDateTap -> TODO()
-            HomeAction.OnEditClick -> TODO()
-            HomeAction.OnSettingsClick -> TODO()
-            HomeAction.OnUndoEditClick -> TODO()
+            HomeAction.OnConfirmEditClick -> {
+                viewModelScope.launch {
+                    meetingsDataSource.updateMeetings(editedMeetings)
+                    editedMeetings.clear()
+                    _state.update { it.copy(isInEditMode = false) }
+                }
+            }
+
+            is HomeAction.OnDateTap -> {
+                if (!state.value.isInEditMode) return
+
+                when (action.appDate.type) {
+                    TODAY_MEETING, PAST_MEETING, FUTURE_MEETING, SPECIAL_MEETING -> {
+                        editedMeetings.remove(action.appDate.date)
+                    }
+
+                    else -> editedMeetings.add(action.appDate.date)
+                }
+            }
+
+            HomeAction.OnSettingsClick -> {}
+            HomeAction.OnEditClick -> {
+                editedMeetings.addAll(state.value.meetings)
+                _state.update { it.copy(isInEditMode = true) }
+            }
+
+            HomeAction.OnUndoEditClick -> {
+                editedMeetings.clear()
+                _state.update { it.copy(isInEditMode = false) }
+            }
         }
     }
+
+    private fun updateDates(
+        meetings: List<LocalDate>
+    ) {
+        _state.update {
+            val now = DateUtil.now()
+            val firstMonthDates = generateDates.execute(
+                now = now,
+                month = now.month,
+                year = now.year,
+                meetings = meetings
+            )
+            val secondMonthDates = generateDates.execute(
+                now = now,
+                month = now.plus(DatePeriod(months = 1)).month,
+                year = now.plus(DatePeriod(months = 1)).year,
+                meetings = meetings
+            )
+
+            it.copy(
+                firstMonthDates = firstMonthDates,
+                secondMonthDates = secondMonthDates
+            )
+        }
+    }
+
+    private fun reloadHomeState(
+        meetings: List<LocalDate>
+    ) {
+        _state.update {
+            val now = DateUtil.now()
+            val firstMonthData = calculateMonthData(
+                now = now,
+                meetings = meetings,
+                monthsOffset = 0
+            )
+            val secondMonthData = calculateMonthData(
+                now = now,
+                meetings = meetings,
+                monthsOffset = 1
+            )
+
+            it.copy(
+                firstMonth = firstMonthData.month,
+                secondMonth = secondMonthData.month,
+                firstYear = firstMonthData.year,
+                secondYear = secondMonthData.year,
+                firstMonthDates = firstMonthData.dates,
+                secondMonthDates = secondMonthData.dates,
+                firstMonthFirstDayOfWeekPosition = firstMonthData.firstDayOfWeekPosition,
+                secondMonthFirstDayOfWeekPosition = secondMonthData.firstDayOfWeekPosition,
+                firstMonthEmptyDatesAmount = firstMonthData.emptyDatesAmount,
+                secondMonthEmptyDatesAmount = secondMonthData.emptyDatesAmount,
+                meetings = meetings
+            )
+        }
+    }
+
+    private fun calculateMonthData(
+        now: LocalDate,
+        meetings: List<LocalDate>,
+        monthsOffset: Int
+    ): MonthData {
+        val targetDate = now.plus(DatePeriod(months = monthsOffset))
+        val month = targetDate.month
+        val year = targetDate.year
+        val monthDates = generateDates.execute(
+            now = now, month = month, year = year, meetings = meetings
+        )
+        val firstDayOfWeekPosition = findFirstDayOfMonthPosition(
+            month = month, year = year
+        )
+        val emptyDatesAmount = findMonthEmptyDatesAmount(
+            firstDayOfWeekPosition = firstDayOfWeekPosition,
+            datesSize = monthDates.size
+        )
+
+        return MonthData(
+            month = month,
+            year = year,
+            dates = monthDates,
+            firstDayOfWeekPosition = firstDayOfWeekPosition,
+            emptyDatesAmount = emptyDatesAmount
+        )
+    }
 }
+
+fun findFirstDayOfMonthPosition(
+    year: Int,
+    month: Month
+): Int {
+    return LocalDate(year = year, month = month, dayOfMonth = 1).dayOfWeek.isoDayNumber - 1
+}
+
+fun findMonthEmptyDatesAmount(
+    firstDayOfWeekPosition: Int,
+    datesSize: Int
+): Int {
+    return 7 - ((firstDayOfWeekPosition + datesSize) % 7)
+}
+
+private data class MonthData(
+    val month: Month,
+    val year: Int,
+    val dates: List<AppDate>,
+    val firstDayOfWeekPosition: Int,
+    val emptyDatesAmount: Int
+)

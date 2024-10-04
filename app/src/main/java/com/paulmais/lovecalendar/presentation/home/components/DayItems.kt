@@ -3,6 +3,7 @@ package com.paulmais.lovecalendar.presentation.home.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -72,9 +74,9 @@ fun DayItem(
                 containerColor = backgroundColor,
                 contentColor = onSurface
             ),
-            shape = RoundedCornerShape(12.dp),
             border = border,
             modifier = modifier
+                .clip(RoundedCornerShape(12.dp))
                 .size(size)
                 .clickable(enabled = isClickable, onClick = onClick)
         ) {
@@ -100,6 +102,40 @@ fun DayItem(
     }
 }
 
+@Composable
+fun DayAfterItem(
+    modifier: Modifier = Modifier,
+    size: Dp
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .size(size)
+            .border(
+                border = BorderStroke(1.dp, Color.Gray),
+                shape = RoundedCornerShape(12.dp)
+            )
+    )
+}
+
+@Composable
+fun DayBeforeItem(
+    modifier: Modifier = Modifier,
+    size: Dp
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .size(size),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.before_month),
+            contentDescription = stringResource(R.string.before_month),
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.3f))
+        )
+    }
+}
 
 @Preview
 @Composable
@@ -120,5 +156,33 @@ fun DayItemPreview() {
                 size = 40.dp
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun DayAfterItemPreview() {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.background)
+            .padding(4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        DayAfterItem(size = 40.dp)
+    }
+}
+
+@Preview
+@Composable
+fun DayBeforeItemPreview() {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.background)
+            .padding(4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        DayBeforeItem(size = 40.dp)
     }
 }

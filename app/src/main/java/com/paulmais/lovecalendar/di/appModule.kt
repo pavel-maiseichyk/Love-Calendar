@@ -5,8 +5,6 @@ import com.paulmais.lovecalendar.data.MeetingsDB
 import com.paulmais.lovecalendar.data.MeetingsDao
 import com.paulmais.lovecalendar.data.repository.MeetingDataSourceImpl
 import com.paulmais.lovecalendar.domain.repository.MeetingsDataSource
-import com.paulmais.lovecalendar.domain.use_case.FindFirstDayOfMonthPosition
-import com.paulmais.lovecalendar.domain.use_case.FindMonthEmptyDatesAmount
 import com.paulmais.lovecalendar.domain.use_case.GenerateDates
 import com.paulmais.lovecalendar.presentation.home.HomeViewModel
 import org.koin.android.ext.koin.androidContext
@@ -30,8 +28,6 @@ val appModule = module {
     }
 
     singleOf(::GenerateDates)
-    singleOf(::FindFirstDayOfMonthPosition)
-    singleOf(::FindMonthEmptyDatesAmount)
 
     singleOf(::MeetingDataSourceImpl).bind<MeetingsDataSource>()
 
