@@ -20,9 +20,8 @@ data class HomeState(
     val firstMonthEmptyDatesAmount: Int = 0,
     val secondMonthEmptyDatesAmount: Int = 0,
 
-    val today: LocalDate? = null,
     val isInEditMode: Boolean = false,
-    val daysLeftText: String = "",
+    val daysLeftText: String = "...",
     val meetings: List<LocalDate> = emptyList(),
     val isLoading: Boolean = true
 )
