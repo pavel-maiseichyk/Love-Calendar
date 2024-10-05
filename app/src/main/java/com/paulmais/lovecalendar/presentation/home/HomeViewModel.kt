@@ -100,8 +100,8 @@ class HomeViewModel(
             )
 
             it.copy(
-                firstMonthDates = firstMonthDates,
-                secondMonthDates = secondMonthDates
+                firstMonthData = state.value.firstMonthData.copy(dates = firstMonthDates),
+                secondMonthData = state.value.secondMonthData.copy(dates = secondMonthDates)
             )
         }
     }
@@ -123,16 +123,8 @@ class HomeViewModel(
             )
 
             it.copy(
-                firstMonth = firstMonthData.month,
-                secondMonth = secondMonthData.month,
-                firstYear = firstMonthData.year,
-                secondYear = secondMonthData.year,
-                firstMonthDates = firstMonthData.dates,
-                secondMonthDates = secondMonthData.dates,
-                firstMonthFirstDayOfWeekPosition = firstMonthData.firstDayOfWeekPosition,
-                secondMonthFirstDayOfWeekPosition = secondMonthData.firstDayOfWeekPosition,
-                firstMonthEmptyDatesAmount = firstMonthData.emptyDatesAmount,
-                secondMonthEmptyDatesAmount = secondMonthData.emptyDatesAmount,
+                firstMonthData = firstMonthData,
+                secondMonthData = secondMonthData,
                 meetings = meetings
             )
         }
@@ -180,11 +172,3 @@ fun findMonthEmptyDatesAmount(
 ): Int {
     return 7 - ((firstDayOfWeekPosition + datesSize) % 7)
 }
-
-private data class MonthData(
-    val month: Month,
-    val year: Int,
-    val dates: List<AppDate>,
-    val firstDayOfWeekPosition: Int,
-    val emptyDatesAmount: Int
-)

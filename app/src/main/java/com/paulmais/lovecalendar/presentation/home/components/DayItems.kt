@@ -90,13 +90,12 @@ fun DayItem(
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.7f))
                     )
-                } else {
-                    Text(
-                        text = text,
-                        fontFamily = montserrat,
-                        fontSize = 20.sp
-                    )
                 }
+                Text(
+                    text = text,
+                    fontFamily = montserrat,
+                    fontSize = 20.sp
+                )
             }
         }
     }

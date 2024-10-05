@@ -53,22 +53,22 @@ private fun HomeScreen(
         MonthItem(
             isEditing = state.isInEditMode,
             isCurrent = true,
-            month = state.firstMonth?.name ?: "",
-            year = state.firstYear.toString(),
-            firstDayPosition = state.firstMonthFirstDayOfWeekPosition,
-            emptyDatesAmount = state.firstMonthEmptyDatesAmount,
-            dates = state.firstMonthDates,
+            month = state.firstMonthData.month.name,
+            year = state.firstMonthData.year.toString(),
+            firstDayPosition = state.firstMonthData.firstDayOfWeekPosition,
+            emptyDatesAmount = state.firstMonthData.emptyDatesAmount,
+            dates = state.firstMonthData.dates,
             onDateTap = { onAction(HomeAction.OnDateTap(it)) },
         )
         Spacer(modifier = Modifier.height(16.dp))
         MonthItem(
             isEditing = state.isInEditMode,
             isCurrent = false,
-            month = state.secondMonth?.name ?: "",
-            year = state.secondYear.toString(),
-            firstDayPosition = state.secondMonthFirstDayOfWeekPosition,
-            emptyDatesAmount = state.secondMonthEmptyDatesAmount,
-            dates = state.secondMonthDates,
+            month = state.secondMonthData.month.name ?: "",
+            year = state.secondMonthData.year.toString(),
+            firstDayPosition = state.secondMonthData.firstDayOfWeekPosition,
+            emptyDatesAmount = state.secondMonthData.emptyDatesAmount,
+            dates = state.secondMonthData.dates,
             onDateTap = { onAction(HomeAction.OnDateTap(it)) },
         )
         Spacer(modifier = Modifier.height(16.dp))
