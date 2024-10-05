@@ -125,7 +125,8 @@ class HomeViewModel(
             it.copy(
                 firstMonthData = firstMonthData,
                 secondMonthData = secondMonthData,
-                meetings = meetings
+                meetings = meetings,
+                daysLeftText = createDaysLeftText(now = now, meetings = meetings)
             )
         }
     }
@@ -156,6 +157,20 @@ class HomeViewModel(
             firstDayOfWeekPosition = firstDayOfWeekPosition,
             emptyDatesAmount = emptyDatesAmount
         )
+    }
+}
+
+fun createDaysLeftText(
+    now: LocalDate,
+    meetings: List<LocalDate>
+): String {
+    val nextMeeting = meetings.find { it >= now }
+    val dateDiff = DateUtil.daysDiff(nextMeeting, now)
+    return when (dateDiff) {
+        -1 -> "none"
+        0 -> "today"
+        1 -> "1 day"
+        else -> "$dateDiff days"
     }
 }
 
