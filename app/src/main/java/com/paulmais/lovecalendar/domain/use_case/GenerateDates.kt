@@ -12,7 +12,8 @@ class GenerateDates {
         now: LocalDate,
         month: Month,
         year: Int,
-        meetings: List<LocalDate>
+        meetings: List<LocalDate>,
+        specialDayNumber: Int
     ): List<AppDate> {
         val days = DateUtil.daysInMonth(month = month, year = year)
         val dates = MutableList(days) { AppDate() }
@@ -24,20 +25,18 @@ class GenerateDates {
                 dayOfMonth = day
             )
 
-            val specialDay = 20
-
             val type = if (meetings.contains(currentDate)) {
                 when {
                     currentDate < now -> DateType.PAST_MEETING
-                    currentDate > now && currentDate.dayOfMonth == specialDay -> DateType.SPECIAL_MEETING
+                    currentDate > now && currentDate.dayOfMonth == specialDayNumber -> DateType.SPECIAL_MEETING
                     currentDate > now -> DateType.FUTURE_MEETING
-                    currentDate == now && currentDate.dayOfMonth == specialDay -> DateType.SPECIAL
+                    currentDate == now && currentDate.dayOfMonth == specialDayNumber -> DateType.SPECIAL
                     currentDate == now -> DateType.TODAY_MEETING
                     else -> DateType.TODAY_MEETING
                 }
             } else {
                 when {
-                    currentDate.dayOfMonth == specialDay -> DateType.SPECIAL
+                    currentDate.dayOfMonth == specialDayNumber -> DateType.SPECIAL
                     currentDate == now -> DateType.TODAY
                     currentDate < now -> DateType.PAST
                     else -> DateType.NORMAL

@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulmais.lovecalendar.domain.model.AppDate
 import com.paulmais.lovecalendar.domain.model.DateType.*
 import com.paulmais.lovecalendar.domain.repository.MeetingsDataSource
 import com.paulmais.lovecalendar.domain.use_case.GenerateDates
@@ -12,7 +11,6 @@ import com.paulmais.lovecalendar.domain.util.DateUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -42,8 +40,14 @@ class HomeViewModel(
             }
             .launchIn(viewModelScope)
 
-        meetingsDataSource.getMeetings().onEach { meetings ->
-            reloadHomeState(meetings = meetings)
+        combine(
+            meetingsDataSource.getMeetings(),
+            meetingsDataSource.getStartingDate()
+        ) { meetings, specialDayNumber ->
+            reloadHomeState(
+                meetings = meetings,
+                specialDayNumber = specialDayNumber?.dayOfMonth ?: 0
+            )
         }.launchIn(viewModelScope)
     }
 
@@ -91,13 +95,15 @@ class HomeViewModel(
                 now = now,
                 month = now.month,
                 year = now.year,
-                meetings = meetings
+                meetings = meetings,
+                specialDayNumber = state.value.specialDayNumber
             )
             val secondMonthDates = generateDates.execute(
                 now = now,
                 month = now.plus(DatePeriod(months = 1)).month,
                 year = now.plus(DatePeriod(months = 1)).year,
-                meetings = meetings
+                meetings = meetings,
+                specialDayNumber = state.value.specialDayNumber
             )
 
             it.copy(
@@ -108,26 +114,30 @@ class HomeViewModel(
     }
 
     private fun reloadHomeState(
-        meetings: List<LocalDate>
+        meetings: List<LocalDate>,
+        specialDayNumber: Int
     ) {
         _state.update {
             val now = DateUtil.now()
             val firstMonthData = calculateMonthData(
                 now = now,
                 meetings = meetings,
-                monthsOffset = 0
+                monthsOffset = 0,
+                specialDayNumber = specialDayNumber
             )
             val secondMonthData = calculateMonthData(
                 now = now,
                 meetings = meetings,
-                monthsOffset = 1
+                monthsOffset = 1,
+                specialDayNumber = specialDayNumber
             )
 
             it.copy(
                 firstMonthData = firstMonthData,
                 secondMonthData = secondMonthData,
                 meetings = meetings,
-                daysLeftText = createDaysLeftText(now = now, meetings = meetings)
+                daysLeftText = createDaysLeftText(now = now, meetings = meetings),
+                specialDayNumber = specialDayNumber
             )
         }
     }
@@ -135,13 +145,18 @@ class HomeViewModel(
     private fun calculateMonthData(
         now: LocalDate,
         meetings: List<LocalDate>,
-        monthsOffset: Int
+        monthsOffset: Int,
+        specialDayNumber: Int
     ): MonthData {
         val targetDate = now.plus(DatePeriod(months = monthsOffset))
         val month = targetDate.month
         val year = targetDate.year
         val monthDates = generateDates.execute(
-            now = now, month = month, year = year, meetings = meetings
+            now = now,
+            month = month,
+            year = year,
+            meetings = meetings,
+            specialDayNumber = specialDayNumber
         )
         val firstDayOfWeekPosition = findFirstDayOfMonthPosition(
             month = month, year = year
@@ -159,32 +174,33 @@ class HomeViewModel(
             emptyDatesAmount = emptyDatesAmount
         )
     }
-}
 
-fun createDaysLeftText(
-    now: LocalDate,
-    meetings: List<LocalDate>
-): String {
-    val nextMeeting = meetings.sorted().find { it >= now }
-    val dateDiff = nextMeeting?.let { now.daysUntil(it) }
-    return when (dateDiff) {
-        -1 -> "none"
-        0 -> "today"
-        1 -> "1 day"
-        else -> "$dateDiff days"
+
+    private fun createDaysLeftText(
+        now: LocalDate,
+        meetings: List<LocalDate>
+    ): String {
+        val nextMeeting = meetings.sorted().find { it >= now }
+        val dateDiff = nextMeeting?.let { now.daysUntil(it) }
+        return when (dateDiff) {
+            -1 -> "none"
+            0 -> "today"
+            1 -> "1 day"
+            else -> "$dateDiff days"
+        }
     }
-}
 
-fun findFirstDayOfMonthPosition(
-    year: Int,
-    month: Month
-): Int {
-    return LocalDate(year = year, month = month, dayOfMonth = 1).dayOfWeek.isoDayNumber - 1
-}
+    private fun findFirstDayOfMonthPosition(
+        year: Int,
+        month: Month
+    ): Int {
+        return LocalDate(year = year, month = month, dayOfMonth = 1).dayOfWeek.isoDayNumber - 1
+    }
 
-fun findMonthEmptyDatesAmount(
-    firstDayOfWeekPosition: Int,
-    datesSize: Int
-): Int {
-    return 7 - ((firstDayOfWeekPosition + datesSize) % 7)
+    private fun findMonthEmptyDatesAmount(
+        firstDayOfWeekPosition: Int,
+        datesSize: Int
+    ): Int {
+        return 7 - ((firstDayOfWeekPosition + datesSize) % 7)
+    }
 }
