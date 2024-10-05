@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
+import kotlinx.datetime.daysUntil
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.plus
 
@@ -164,8 +165,8 @@ fun createDaysLeftText(
     now: LocalDate,
     meetings: List<LocalDate>
 ): String {
-    val nextMeeting = meetings.find { it >= now }
-    val dateDiff = DateUtil.daysDiff(nextMeeting, now)
+    val nextMeeting = meetings.sorted().find { it >= now }
+    val dateDiff = nextMeeting?.let { now.daysUntil(it) }
     return when (dateDiff) {
         -1 -> "none"
         0 -> "today"

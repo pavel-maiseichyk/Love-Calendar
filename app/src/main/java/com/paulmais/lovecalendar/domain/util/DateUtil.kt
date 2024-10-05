@@ -26,15 +26,4 @@ object DateUtil {
                     ).toEpochDays()
         else 31
     }
-
-    fun daysDiff(nextMeeting: LocalDate?, now: LocalDate): Int {
-        if (nextMeeting == null) return -1
-        if (nextMeeting.month.number > now.month.number && nextMeeting.dayOfMonth > now.dayOfMonth) {
-            return nextMeeting.minus(now).days + daysInMonth(now.month, now.year)
-        }
-        if (nextMeeting.month.number > now.month.number && nextMeeting.dayOfMonth == now.dayOfMonth) {
-            return daysInMonth(now.month, now.year)
-        }
-        return nextMeeting.minus(now).days
-    }
 }

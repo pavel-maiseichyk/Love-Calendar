@@ -6,6 +6,7 @@ import com.paulmais.lovecalendar.data.MeetingsDao
 import com.paulmais.lovecalendar.data.repository.MeetingDataSourceImpl
 import com.paulmais.lovecalendar.domain.repository.MeetingsDataSource
 import com.paulmais.lovecalendar.domain.use_case.GenerateDates
+import com.paulmais.lovecalendar.domain.use_case.GenerateDaysLeft
 import com.paulmais.lovecalendar.presentation.home.HomeViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -28,6 +29,7 @@ val appModule = module {
     }
 
     singleOf(::GenerateDates)
+    singleOf(::GenerateDaysLeft)
 
     singleOf(::MeetingDataSourceImpl).bind<MeetingsDataSource>()
 
