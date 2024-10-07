@@ -30,7 +30,7 @@ fun LoveCalendarTheme(
             val window = (view.context as Activity).window
             window.statusBarColor = materialSurfaceColor.toArgb()
             window.navigationBarColor = materialSurfaceColor.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
         }
     }
 

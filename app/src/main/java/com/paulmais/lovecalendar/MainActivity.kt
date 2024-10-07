@@ -9,8 +9,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.paulmais.lovecalendar.di.appModule
+import com.paulmais.lovecalendar.presentation.components.CalendarScreen
+import com.paulmais.lovecalendar.presentation.components.HomeScreen
 import com.paulmais.lovecalendar.presentation.components.MyNavigationBar
+import com.paulmais.lovecalendar.presentation.components.SettingsScreen
 import com.paulmais.lovecalendar.presentation.home.HomeScreenRoot
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.android.ext.koin.androidContext
@@ -25,19 +31,23 @@ class MainActivity : ComponentActivity() {
             modules(appModule)
         }
 
-        var currentDestinationIndex by mutableIntStateOf(0)
-
         setContent {
             LoveCalendarTheme {
+                val navController = rememberNavController()
                 Scaffold(
                     bottomBar = {
-                        MyNavigationBar(
-                            selectedIndex = currentDestinationIndex,
-                            onItemClick = { currentDestinationIndex = it }
-                        )
+                        MyNavigationBar(navController = navController)
                     }
                 ) { paddingValues ->
-                    HomeScreenRoot(modifier = Modifier.padding(paddingValues))
+                    NavHost(
+                        navController = navController,
+                        startDestination = HomeScreen,
+                        modifier = Modifier.padding(paddingValues)
+                    ) {
+                        composable<HomeScreen> { HomeScreenRoot() }
+                        composable<CalendarScreen> { }
+                        composable<SettingsScreen> { }
+                    }
                 }
             }
         }
