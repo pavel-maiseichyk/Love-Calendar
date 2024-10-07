@@ -1,5 +1,6 @@
 package com.paulmais.lovecalendar.presentation.components
 
+import androidx.compose.foundation.border
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -11,8 +12,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
@@ -28,7 +33,17 @@ fun TopAppBar(
     modifier: Modifier = Modifier
 ) {
     CenterAlignedTopAppBar(
-        modifier = modifier,
+        modifier = modifier
+            .drawBehind {
+                val borderSize = 2.dp.toPx()
+                val y = size.height - borderSize / 2
+                drawLine(
+                    color = Color.Black,
+                    start = Offset(0f, y),
+                    end = Offset(size.width, y),
+                    strokeWidth = borderSize
+                )
+            },
         title = {
             Text(
                 text = text,

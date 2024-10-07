@@ -3,9 +3,16 @@ package com.paulmais.lovecalendar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import com.paulmais.lovecalendar.di.appModule
+import com.paulmais.lovecalendar.presentation.components.NavigationAppBar
 import com.paulmais.lovecalendar.presentation.home.HomeScreenRoot
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.android.ext.koin.androidContext
@@ -20,9 +27,20 @@ class MainActivity : ComponentActivity() {
             modules(appModule)
         }
 
+        var currentDestinationIndex by mutableIntStateOf(0)
+
         setContent {
             LoveCalendarTheme {
-                HomeScreenRoot()
+                Scaffold(
+                    bottomBar = {
+                        NavigationAppBar(
+                            selectedIndex = currentDestinationIndex,
+                            onItemClick = { currentDestinationIndex = it }
+                        )
+                    }
+                ) { paddingValues ->
+                    HomeScreenRoot(modifier = Modifier.padding(paddingValues))
+                }
             }
         }
     }

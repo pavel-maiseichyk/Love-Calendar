@@ -21,12 +21,14 @@ fun LoveCalendarTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) appDarkColors else appLightColors
+    val materialSurfaceColor = WildSand
 
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = materialSurfaceColor.toArgb()
+            window.navigationBarColor = materialSurfaceColor.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
