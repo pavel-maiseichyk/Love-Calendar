@@ -73,7 +73,6 @@ class HomeViewModel(
                 }
             }
 
-            HomeAction.OnSettingsClick -> {}
             HomeAction.OnEditClick -> {
                 editedMeetings.addAll(state.value.meetings)
                 _state.update { it.copy(isInEditMode = true) }
@@ -183,10 +182,10 @@ class HomeViewModel(
         val nextMeeting = meetings.sorted().find { it >= now }
         val dateDiff = nextMeeting?.let { now.daysUntil(it) }
         return when (dateDiff) {
-            -1 -> "none"
-            0 -> "today"
-            1 -> "1 day"
-            else -> "$dateDiff days"
+            -1 -> "None"
+            0 -> "Today"
+            1 -> "1 Day Left"
+            else -> "$dateDiff Days Left"
         }
     }
 

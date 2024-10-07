@@ -1,8 +1,5 @@
 package com.paulmais.lovecalendar.presentation.components
 
-import androidx.compose.foundation.border
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,20 +12,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(
+fun MyTopBar(
     text: String,
-    leftButtonVector: ImageVector? = null,
+    leftButtonPainter: Painter? = null,
     onLeftButtonClick: () -> Unit = {},
-    rightButtonVector: ImageVector? = null,
+    rightButtonPainter: Painter? = null,
     onRightButtonClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -36,7 +35,7 @@ fun TopAppBar(
         modifier = modifier
             .drawBehind {
                 val borderSize = 2.dp.toPx()
-                val y = size.height - borderSize / 2
+                val y = size.height
                 drawLine(
                     color = Color.Black,
                     start = Offset(0f, y),
@@ -48,11 +47,11 @@ fun TopAppBar(
             Text(
                 text = text,
                 fontFamily = montserrat,
-                fontSize = 28.sp
+                fontSize = 28.sp,
             )
         },
         navigationIcon = {
-            leftButtonVector?.let { icon ->
+            leftButtonPainter?.let { icon ->
                 IconButton(
                     onClick = onLeftButtonClick,
                     colors = IconButtonDefaults.iconButtonColors(
@@ -61,14 +60,14 @@ fun TopAppBar(
                     )
                 ) {
                     Icon(
-                        imageVector = icon,
+                        painter = icon,
                         contentDescription = null
                     )
                 }
             }
         },
         actions = {
-            rightButtonVector?.let { icon ->
+            rightButtonPainter?.let { icon ->
                 IconButton(
                     onClick = onRightButtonClick,
                     colors = IconButtonDefaults.iconButtonColors(
@@ -77,7 +76,7 @@ fun TopAppBar(
                     )
                 ) {
                     Icon(
-                        imageVector = icon,
+                        painter = icon,
                         contentDescription = null
                     )
                 }
@@ -90,9 +89,9 @@ fun TopAppBar(
 @Composable
 private fun TopAppBarPreview() {
     LoveCalendarTheme {
-        TopAppBar(
+        MyTopBar(
             text = "4 Days Left",
-            rightButtonVector = Icons.Default.Add
+//            rightButtonVector = Icons.Default.Add
         )
     }
 }

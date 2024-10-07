@@ -1,18 +1,11 @@
 package com.paulmais.lovecalendar.presentation.components
 
-import android.graphics.drawable.shapes.Shape
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -23,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulmais.lovecalendar.R
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
-import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
 
 val destinations = listOf(
     NavigationItem(
@@ -47,7 +39,7 @@ val destinations = listOf(
 )
 
 @Composable
-fun NavigationAppBar(
+fun MyNavigationBar(
     selectedIndex: Int,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
@@ -101,6 +93,6 @@ data class NavigationItem(
 @Composable
 private fun NavigationAppBarPreview() {
     LoveCalendarTheme {
-        NavigationAppBar(selectedIndex = 0, onItemClick = {})
+        MyNavigationBar(selectedIndex = 0, onItemClick = {})
     }
 }
