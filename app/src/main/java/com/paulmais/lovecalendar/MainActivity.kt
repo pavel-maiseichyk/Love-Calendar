@@ -18,6 +18,7 @@ import com.paulmais.lovecalendar.presentation.components.HomeScreen
 import com.paulmais.lovecalendar.presentation.components.MyNavigationBar
 import com.paulmais.lovecalendar.presentation.components.SettingsScreen
 import com.paulmais.lovecalendar.presentation.home.HomeScreenRoot
+import com.paulmais.lovecalendar.presentation.settings.SettingsScreenRoot
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable<HomeScreen> { HomeScreenRoot() }
                         composable<CalendarScreen> { }
-                        composable<SettingsScreen> { }
+                        composable<SettingsScreen> { SettingsScreenRoot() }
                     }
                 }
             }

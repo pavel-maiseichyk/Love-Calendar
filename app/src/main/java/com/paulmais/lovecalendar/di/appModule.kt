@@ -17,6 +17,7 @@ import com.paulmais.lovecalendar.domain.repository.UserPrefs
 import com.paulmais.lovecalendar.domain.use_case.GenerateDates
 import com.paulmais.lovecalendar.domain.use_case.GenerateDaysLeft
 import com.paulmais.lovecalendar.presentation.home.HomeViewModel
+import com.paulmais.lovecalendar.presentation.settings.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -60,4 +61,5 @@ val appModule = module {
     singleOf(::DataStoreUserPrefs).bind<UserPrefs>()
 
     viewModelOf(::HomeViewModel)
+    viewModelOf(::SettingsViewModel)
 }

@@ -25,23 +25,20 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreenRoot(
-    viewModel: HomeViewModel = koinViewModel(),
-    modifier: Modifier = Modifier
+    viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     HomeScreen(
         state = state,
-        onAction = viewModel::onAction,
-        modifier = modifier
+        onAction = viewModel::onAction
     )
 }
 
 @Composable
 private fun HomeScreen(
     state: HomeState,
-    onAction: (HomeAction) -> Unit,
-    modifier: Modifier = Modifier
+    onAction: (HomeAction) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -59,7 +56,7 @@ private fun HomeScreen(
         }
     ) { paddingValues ->
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
