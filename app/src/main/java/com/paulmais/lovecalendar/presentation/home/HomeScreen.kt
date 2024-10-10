@@ -51,7 +51,7 @@ private fun HomeScreen(
                 onRightButtonClick = {
                     if (state.isInEditMode) onAction(HomeAction.OnConfirmEditClick)
                     else onAction(HomeAction.OnEditClick)
-                },
+                }
             )
         }
     ) { paddingValues ->
