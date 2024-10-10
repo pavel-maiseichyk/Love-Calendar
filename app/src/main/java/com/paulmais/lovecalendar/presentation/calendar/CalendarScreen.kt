@@ -1,4 +1,4 @@
-package com.paulmais.lovecalendar.presentation.home
+package com.paulmais.lovecalendar.presentation.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,38 +19,38 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.paulmais.lovecalendar.R
 import com.paulmais.lovecalendar.presentation.components.MyTopBar
-import com.paulmais.lovecalendar.presentation.home.components.MonthItem
+import com.paulmais.lovecalendar.presentation.calendar.components.MonthItem
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeScreenRoot(
-    viewModel: HomeViewModel = koinViewModel()
+fun CalendarScreenRoot(
+    viewModel: CalendarViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    HomeScreen(
+    CalendarScreen(
         state = state,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-private fun HomeScreen(
-    state: HomeState,
-    onAction: (HomeAction) -> Unit
+private fun CalendarScreen(
+    state: CalendarState,
+    onAction: (CalendarAction) -> Unit
 ) {
     Scaffold(
         topBar = {
             MyTopBar(
                 text = if (state.isInEditMode) "Editing..." else state.daysLeftText,
                 leftButtonPainter = if (state.isInEditMode) painterResource(id = R.drawable.close) else null,
-                onLeftButtonClick = { onAction(HomeAction.OnUndoEditClick) },
+                onLeftButtonClick = { onAction(CalendarAction.OnUndoEditClick) },
                 rightButtonPainter = if (state.isInEditMode) painterResource(id = R.drawable.done)
                 else painterResource(id = R.drawable.add),
                 onRightButtonClick = {
-                    if (state.isInEditMode) onAction(HomeAction.OnConfirmEditClick)
-                    else onAction(HomeAction.OnEditClick)
+                    if (state.isInEditMode) onAction(CalendarAction.OnConfirmEditClick)
+                    else onAction(CalendarAction.OnEditClick)
                 }
             )
         }
@@ -72,7 +72,7 @@ private fun HomeScreen(
                 firstDayPosition = state.firstMonthData.firstDayOfWeekPosition,
                 emptyDatesAmount = state.firstMonthData.emptyDatesAmount,
                 dates = state.firstMonthData.dates,
-                onDateTap = { onAction(HomeAction.OnDateTap(it)) },
+                onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
             )
             Spacer(modifier = Modifier.height(16.dp))
             MonthItem(
@@ -83,7 +83,7 @@ private fun HomeScreen(
                 firstDayPosition = state.secondMonthData.firstDayOfWeekPosition,
                 emptyDatesAmount = state.secondMonthData.emptyDatesAmount,
                 dates = state.secondMonthData.dates,
-                onDateTap = { onAction(HomeAction.OnDateTap(it)) },
+                onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -92,10 +92,10 @@ private fun HomeScreen(
 
 @Preview
 @Composable
-private fun HomeScreenPreview() {
+private fun CalendarScreenPreview() {
     LoveCalendarTheme {
-        HomeScreen(
-            state = HomeState(),
+        CalendarScreen(
+            state = CalendarState(),
             onAction = {}
         )
     }

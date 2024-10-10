@@ -1,4 +1,4 @@
-package com.paulmais.lovecalendar.presentation.home
+package com.paulmais.lovecalendar.presentation.calendar
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshotFlow
@@ -22,14 +22,14 @@ import kotlinx.datetime.daysUntil
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.plus
 
-class HomeViewModel(
+class CalendarViewModel(
     private val generateDates: GenerateDates,
     private val meetingsDataSource: MeetingsDataSource
 ) : ViewModel() {
 
     private var editedMeetings = mutableStateListOf<LocalDate>()
 
-    private val _state = MutableStateFlow(HomeState())
+    private val _state = MutableStateFlow(CalendarState())
     val state = _state.asStateFlow()
 
     init {
@@ -51,9 +51,9 @@ class HomeViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun onAction(action: HomeAction) {
+    fun onAction(action: CalendarAction) {
         when (action) {
-            HomeAction.OnConfirmEditClick -> {
+            CalendarAction.OnConfirmEditClick -> {
                 viewModelScope.launch {
                     meetingsDataSource.updateMeetings(editedMeetings)
                     editedMeetings.clear()
@@ -61,7 +61,7 @@ class HomeViewModel(
                 }
             }
 
-            is HomeAction.OnDateTap -> {
+            is CalendarAction.OnDateTap -> {
                 if (!state.value.isInEditMode) return
 
                 when (action.appDate.type) {
@@ -73,12 +73,12 @@ class HomeViewModel(
                 }
             }
 
-            HomeAction.OnEditClick -> {
+            CalendarAction.OnEditClick -> {
                 editedMeetings.addAll(state.value.meetings)
                 _state.update { it.copy(isInEditMode = true) }
             }
 
-            HomeAction.OnUndoEditClick -> {
+            CalendarAction.OnUndoEditClick -> {
                 editedMeetings.clear()
                 _state.update { it.copy(isInEditMode = false) }
             }

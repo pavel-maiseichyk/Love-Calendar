@@ -1,4 +1,4 @@
-package com.paulmais.lovecalendar.presentation.home
+package com.paulmais.lovecalendar.presentation.calendar
 
 import com.paulmais.lovecalendar.domain.model.AppDate
 import kotlinx.datetime.Month

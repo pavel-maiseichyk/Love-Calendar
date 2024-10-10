@@ -16,7 +16,7 @@ import com.paulmais.lovecalendar.domain.repository.MeetingsDataSource
 import com.paulmais.lovecalendar.domain.repository.UserPrefs
 import com.paulmais.lovecalendar.domain.use_case.GenerateDates
 import com.paulmais.lovecalendar.domain.use_case.GenerateDaysLeft
-import com.paulmais.lovecalendar.presentation.home.HomeViewModel
+import com.paulmais.lovecalendar.presentation.calendar.CalendarViewModel
 import com.paulmais.lovecalendar.presentation.settings.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +60,6 @@ val appModule = module {
     singleOf(::MeetingDataSourceImpl).bind<MeetingsDataSource>()
     singleOf(::DataStoreUserPrefs).bind<UserPrefs>()
 
-    viewModelOf(::HomeViewModel)
+    viewModelOf(::CalendarViewModel)
     viewModelOf(::SettingsViewModel)
 }

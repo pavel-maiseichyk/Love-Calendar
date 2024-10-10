@@ -1,8 +1,8 @@
-package com.paulmais.lovecalendar.presentation.home
+package com.paulmais.lovecalendar.presentation.calendar
 
 import kotlinx.datetime.LocalDate
 
-data class HomeState(
+data class CalendarState(
     val firstMonthData: MonthData = MonthData(),
     val secondMonthData: MonthData = MonthData(),
     val meetings: List<LocalDate> = emptyList(),

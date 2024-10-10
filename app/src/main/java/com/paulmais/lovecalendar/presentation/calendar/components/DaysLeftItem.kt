@@ -1,4 +1,4 @@
-package com.paulmais.lovecalendar.presentation.home.components
+package com.paulmais.lovecalendar.presentation.calendar.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
