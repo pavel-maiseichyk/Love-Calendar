@@ -182,7 +182,7 @@ class HomeViewModel(
         val nextMeeting = meetings.sorted().find { it >= now }
         val dateDiff = nextMeeting?.let { now.daysUntil(it) }
         return when (dateDiff) {
-            -1 -> "None"
+            null -> "None"
             0 -> "Today"
             1 -> "1 Day Left"
             else -> "$dateDiff Days Left"
