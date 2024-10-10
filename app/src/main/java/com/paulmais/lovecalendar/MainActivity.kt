@@ -15,10 +15,12 @@ import com.paulmais.lovecalendar.presentation.components.HomeScreen
 import com.paulmais.lovecalendar.presentation.components.MyNavigationBar
 import com.paulmais.lovecalendar.presentation.components.SettingsScreen
 import com.paulmais.lovecalendar.presentation.calendar.CalendarScreenRoot
+import com.paulmais.lovecalendar.presentation.calendar.CalendarViewModel
 import com.paulmais.lovecalendar.presentation.home.HomeScreenRoot
 import com.paulmais.lovecalendar.presentation.settings.SettingsScreenRoot
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
@@ -29,6 +31,8 @@ class MainActivity : ComponentActivity() {
             androidContext(this@MainActivity)
             modules(appModule)
         }
+
+        val calendarViewModel = getViewModel<CalendarViewModel>()
 
         setContent {
             LoveCalendarTheme {
@@ -44,7 +48,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(paddingValues)
                     ) {
                         composable<HomeScreen> { HomeScreenRoot() }
-                        composable<CalendarScreen> { CalendarScreenRoot() }
+                        composable<CalendarScreen> { CalendarScreenRoot(calendarViewModel) }
                         composable<SettingsScreen> { SettingsScreenRoot() }
                     }
                 }

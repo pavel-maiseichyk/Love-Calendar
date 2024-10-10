@@ -4,8 +4,10 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulmais.lovecalendar.domain.repository.MeetingsDataSource
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -16,6 +18,9 @@ class SettingsViewModel(
 
     private val _state = MutableStateFlow(SettingsState())
     val state = _state.asStateFlow()
+
+    private val eventChannel = Channel<SettingsEvent>()
+    val events = eventChannel.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -51,9 +56,13 @@ class SettingsViewModel(
                             state.value.specialDateTextFieldState.text.toString().formatToISO()
                         meetingsDataSource.updateStartingDate(date)
                         _state.update { it.copy(isEditingSpecialDate = false) }
-                    } catch (e: Exception) {
+                        eventChannel.send(SettingsEvent.ShowToast(message = "Saved successfully!"))
+                    } catch (e: IllegalArgumentException) {
                         println(e)
-                        // TODO: Add a toast with an exception
+                        eventChannel.send(SettingsEvent.ShowToast(message = "Please, enter the correct date."))
+                    }  catch (e: Exception) {
+                        println(e)
+                        eventChannel.send(SettingsEvent.ShowToast(message = "Failure. Please, check your date again."))
                     }
                 }
             }
