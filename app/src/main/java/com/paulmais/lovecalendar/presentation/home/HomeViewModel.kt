@@ -17,8 +17,9 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch {
-            val daysUntilList = generateDaysLeft.execute()
-            _state.update { it.copy(daysUntilList = daysUntilList) }
+            generateDaysLeft.execute().collect { daysUntilList ->
+                _state.update { it.copy(daysUntilList = daysUntilList) }
+            }
         }
     }
 }

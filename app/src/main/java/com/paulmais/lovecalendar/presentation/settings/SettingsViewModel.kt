@@ -20,9 +20,7 @@ class SettingsViewModel(
     init {
         viewModelScope.launch {
             meetingsDataSource.getStartingDate().collect { date ->
-                if (date == null) {
-
-                } else {
+                if (date != null) {
                     val formattedDate = date.reverseDateFormat()
                     _state.update { it.copy(specialDateString = formattedDate) }
                 }
