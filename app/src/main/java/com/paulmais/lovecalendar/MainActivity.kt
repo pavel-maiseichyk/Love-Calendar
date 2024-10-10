@@ -15,6 +15,7 @@ import com.paulmais.lovecalendar.presentation.components.HomeScreen
 import com.paulmais.lovecalendar.presentation.components.MyNavigationBar
 import com.paulmais.lovecalendar.presentation.components.SettingsScreen
 import com.paulmais.lovecalendar.presentation.calendar.CalendarScreenRoot
+import com.paulmais.lovecalendar.presentation.home.HomeScreenRoot
 import com.paulmais.lovecalendar.presentation.settings.SettingsScreenRoot
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.android.ext.koin.androidContext
@@ -42,8 +43,8 @@ class MainActivity : ComponentActivity() {
                         startDestination = HomeScreen,
                         modifier = Modifier.padding(paddingValues)
                     ) {
-                        composable<HomeScreen> { CalendarScreenRoot() }
-                        composable<CalendarScreen> { }
+                        composable<HomeScreen> { HomeScreenRoot() }
+                        composable<CalendarScreen> { CalendarScreenRoot() }
                         composable<SettingsScreen> { SettingsScreenRoot() }
                     }
                 }
