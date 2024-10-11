@@ -24,6 +24,7 @@ import com.paulmais.lovecalendar.domain.model.DaysUntilItem
 import com.paulmais.lovecalendar.domain.model.DaysUntilType.*
 import com.paulmais.lovecalendar.presentation.ui.theme.Cornflower_Lilac
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
+import com.paulmais.lovecalendar.presentation.ui.theme.Sidecar
 import com.paulmais.lovecalendar.presentation.ui.theme.Sindbad
 import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
 
@@ -33,7 +34,8 @@ fun DaysUntilComponent(
     modifier: Modifier = Modifier
 ) {
     val background = remember {
-        when (daysUntilItem.type) {
+        if (daysUntilItem.daysUntil == 0) Sidecar
+        else when (daysUntilItem.type) {
             Meeting -> Sindbad
             Special -> Cornflower_Lilac
             Other -> Color(0xFFFBFBFB)
