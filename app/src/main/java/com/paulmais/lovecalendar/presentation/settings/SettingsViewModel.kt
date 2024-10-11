@@ -60,7 +60,7 @@ class SettingsViewModel(
                     } catch (e: IllegalArgumentException) {
                         println(e)
                         eventChannel.send(SettingsEvent.ShowToast(message = "Please, enter the correct date."))
-                    }  catch (e: Exception) {
+                    } catch (e: Exception) {
                         println(e)
                         eventChannel.send(SettingsEvent.ShowToast(message = "Failure. Please, check your date again."))
                     }
