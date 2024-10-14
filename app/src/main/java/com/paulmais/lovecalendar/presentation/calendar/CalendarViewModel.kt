@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
@@ -28,6 +30,7 @@ class CalendarViewModel(
 ) : ViewModel() {
 
     private var editedMeetings = mutableStateListOf<LocalDate>()
+    private val mutex = Mutex()
 
     private val _state = MutableStateFlow(CalendarState())
     val state = _state.asStateFlow()
@@ -55,9 +58,11 @@ class CalendarViewModel(
         when (action) {
             CalendarAction.OnConfirmEditClick -> {
                 viewModelScope.launch {
-                    meetingsDataSource.updateMeetings(editedMeetings)
-                    editedMeetings.clear()
-                    _state.update { it.copy(isInEditMode = false) }
+                    mutex.withLock {
+                        meetingsDataSource.updateMeetings(editedMeetings)
+                        editedMeetings.clear()
+                        _state.update { it.copy(isInEditMode = false) }
+                    }
                 }
             }
 
