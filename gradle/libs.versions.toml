@@ -15,6 +15,7 @@ room = "2.6.1"
 datastore = "1.1.1"
 navigation = "2.8.2"
 serialization = "1.6.3"
+splashscreen = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +41,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
