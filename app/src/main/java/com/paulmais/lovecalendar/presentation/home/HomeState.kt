@@ -1,7 +1,7 @@
 package com.paulmais.lovecalendar.presentation.home
 
-import com.paulmais.lovecalendar.domain.model.DaysUntilItem
+import com.paulmais.lovecalendar.presentation.home.components.DaysUntilItemUI
 
 data class HomeState(
-    val daysUntilList: List<DaysUntilItem> = emptyList()
+    val daysUntilUIList: List<DaysUntilItemUI> = emptyList()
 )

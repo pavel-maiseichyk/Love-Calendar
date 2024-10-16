@@ -32,7 +32,7 @@ class GenerateDaysLeft(
 
                 startingDate?.let {
                     result.addAll(
-                        getMultiplesOf3AndNextMonthiversariesFor3Years(
+                        getMultiplesOf3NotOf12AndNextMonthiversariesFor3Years(
                             now = now,
                             specialDate = it
                         )
@@ -59,7 +59,7 @@ class GenerateDaysLeft(
         )
     }
 
-    private fun getMultiplesOf3AndNextMonthiversariesFor3Years(
+    private fun getMultiplesOf3NotOf12AndNextMonthiversariesFor3Years(
         now: LocalDate,
         specialDate: LocalDate
     ): List<DaysUntilItem> {
@@ -82,7 +82,7 @@ class GenerateDaysLeft(
                 .let { monthsFromStartUntilClosest + it }
         var nextDate = specialDate.plus(DatePeriod(months = monthsMultipleOf3FromStartUntilClosest))
 
-        if (nextDate != closestMonthiversaryDate) {
+        if (nextDate != closestMonthiversaryDate && monthsFromStartUntilClosest % 12 != 0) {
             val closestMonthiversaryItem = DaysUntilItem(
                 title = getTitleForMonths(monthsFromStartUntilClosest),
                 daysUntil = now.daysUntil(closestMonthiversaryDate),
@@ -95,13 +95,16 @@ class GenerateDaysLeft(
         val threeYearFromNow = now.plus(DatePeriod(years = 3))
 
         while (nextDate <= threeYearFromNow) {
-            val item = DaysUntilItem(
-                title = getTitleForMonths(specialDate.monthsUntil(nextDate)),
-                daysUntil = now.daysUntil(nextDate),
-                date = nextDate,
-                type = DaysUntilType.Special
-            )
-            result.add(item)
+            val monthsUntil = specialDate.monthsUntil(nextDate)
+            if (monthsUntil % 12 != 0) {
+                val item = DaysUntilItem(
+                    title = getTitleForMonths(monthsUntil),
+                    daysUntil = now.daysUntil(nextDate),
+                    date = nextDate,
+                    type = DaysUntilType.Special
+                )
+                result.add(item)
+            }
             nextDate = nextDate.plus(DatePeriod(months = 3))
         }
         return result

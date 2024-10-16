@@ -26,4 +26,32 @@ object DateUtil {
                     ).toEpochDays()
         else 31
     }
+
+    fun String.formatToISO(): LocalDate {
+        if (length != 8) {
+            throw IllegalArgumentException("Invalid input. Expected a string with 8 characters.")
+        }
+
+        val day = substring(0, 2)
+        val month = substring(2, 4)
+        val year = substring(4, 8)
+
+        val formattedDate = "$year-$month-${day}"
+
+        return LocalDate.parse(formattedDate)
+    }
+
+    fun LocalDate?.reverseDateFormat(): String {
+        if (this == null) {
+            throw IllegalArgumentException("Invalid input. LocalDate cannot be null.")
+        }
+
+        val dateString = this.toString()
+
+        val year = dateString.substring(0, 4)
+        val month = dateString.substring(5, 7)
+        val day = dateString.substring(8, 10)
+
+        return "$day.$month.$year"
+    }
 }
