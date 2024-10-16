@@ -27,6 +27,7 @@ import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import com.paulmais.lovecalendar.presentation.ui.theme.Sidecar
 import com.paulmais.lovecalendar.presentation.ui.theme.Sindbad
 import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun DaysUntilComponent(
@@ -82,6 +83,7 @@ private fun DaysUntilComponentPreview() {
             daysUntilItem = DaysUntilItem(
                 title = "Monthiversary",
                 daysUntil = 15,
+                date = LocalDate(year = 2024, monthNumber = 2, dayOfMonth = 20),
                 type = Other
             )
         )

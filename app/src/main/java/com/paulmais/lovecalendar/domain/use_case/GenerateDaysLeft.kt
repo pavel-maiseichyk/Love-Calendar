@@ -18,7 +18,7 @@ class GenerateDaysLeft(
     private val meetingsDataSource: MeetingsDataSource
 ) {
 
-    suspend fun execute(
+    fun execute(
         now: LocalDate = DateUtil.now()
     ): Flow<List<DaysUntilItem>> {
         return flow {
@@ -28,25 +28,18 @@ class GenerateDaysLeft(
             ) { startingDate, meetings ->
                 val result = mutableListOf<DaysUntilItem>()
 
-                val multiplesOf100Map =
-                    startingDate?.let { get5NextMultiplesOf100Map(now = now, startingDate = it) }
-                if (multiplesOf100Map != null) result.addAll(multiplesOf100Map)
+                getNextMeeting(now = now, meetings = meetings)?.let { result.add(it) }
 
-                val nextMeeting = getNextMeeting(now = now, meetings = meetings)
-                if (nextMeeting != null) result.add(nextMeeting)
-
-                val nextAnniversary =
-                    startingDate?.let { getNextAnniversary(now = now, specialDate = it) }
-                if (nextAnniversary != null) result.add(nextAnniversary)
-
-
-                startingDate
-                    ?.let { getNextMonthiversary(now = now, specialDate = it) }
-                    ?.let { result.add(it) }
-
-//                val monthiversaries =
-//                    startingDate?.let { getMonthiversariesForYear(now = now, specialDate = it) }
-//                if (monthiversaries != null) result.addAll(monthiversaries)
+                startingDate?.let {
+                    result.addAll(
+                        getMultiplesOf3AndNextMonthiversariesFor3Years(
+                            now = now,
+                            specialDate = it
+                        )
+                    )
+                    result.addAll(getAnniversariesFor3Years(now = now, specialDate = it))
+                    result.addAll(getMultiplesOf100For3Years(now = now, startingDate = it))
+                }
 
                 result.sortedBy { it.daysUntil }
             }.collect { emit(it) }
@@ -61,11 +54,90 @@ class GenerateDaysLeft(
         return DaysUntilItem(
             title = "Next Meeting",
             daysUntil = now.daysUntil(nextMeeting),
+            date = nextMeeting,
             type = DaysUntilType.Meeting
         )
     }
 
-    private fun get5NextMultiplesOf100Map(
+    private fun getMultiplesOf3AndNextMonthiversariesFor3Years(
+        now: LocalDate,
+        specialDate: LocalDate
+    ): List<DaysUntilItem> {
+        val result = mutableListOf<DaysUntilItem>()
+        val monthiversaryDateThisMonth = LocalDate(
+            year = now.year,
+            month = now.month,
+            dayOfMonth = specialDate.dayOfMonth
+        )
+
+        val closestMonthiversaryDate = if (now.daysUntil(monthiversaryDateThisMonth) < 0) {
+            monthiversaryDateThisMonth.plus(DatePeriod(months = 1))
+        } else monthiversaryDateThisMonth
+
+        val monthsFromStartUntilClosest = specialDate.monthsUntil(closestMonthiversaryDate)
+
+        val monthsMultipleOf3FromStartUntilClosest =
+            (0..2)
+                .first { (monthsFromStartUntilClosest + it) % 3 == 0 }
+                .let { monthsFromStartUntilClosest + it }
+        var nextDate = specialDate.plus(DatePeriod(months = monthsMultipleOf3FromStartUntilClosest))
+
+        if (nextDate != closestMonthiversaryDate) {
+            val closestMonthiversaryItem = DaysUntilItem(
+                title = getTitleForMonths(monthsFromStartUntilClosest),
+                daysUntil = now.daysUntil(closestMonthiversaryDate),
+                date = closestMonthiversaryDate,
+                type = DaysUntilType.Special
+            )
+            result.add(closestMonthiversaryItem)
+        }
+
+        val threeYearFromNow = now.plus(DatePeriod(years = 3))
+
+        while (nextDate <= threeYearFromNow) {
+            val item = DaysUntilItem(
+                title = getTitleForMonths(specialDate.monthsUntil(nextDate)),
+                daysUntil = now.daysUntil(nextDate),
+                date = nextDate,
+                type = DaysUntilType.Special
+            )
+            result.add(item)
+            nextDate = nextDate.plus(DatePeriod(months = 3))
+        }
+        return result
+    }
+
+    private fun getAnniversariesFor3Years(
+        now: LocalDate,
+        specialDate: LocalDate
+    ): List<DaysUntilItem> {
+        val result = mutableListOf<DaysUntilItem>()
+        val anniversaryDateThisYear = LocalDate(
+            year = now.year,
+            month = specialDate.month,
+            dayOfMonth = specialDate.dayOfMonth
+        )
+
+        var nextAnniversaryDate = if (now.daysUntil(anniversaryDateThisYear) < 0) {
+            anniversaryDateThisYear.plus(DatePeriod(years = 1))
+        } else anniversaryDateThisYear
+        val threeYearsFromNow = now.plus(DatePeriod(years = 3))
+
+        while (nextAnniversaryDate <= threeYearsFromNow) {
+            val item = DaysUntilItem(
+                title = getTitleForYears(specialDate.yearsUntil(nextAnniversaryDate)),
+                daysUntil = now.daysUntil(nextAnniversaryDate),
+                date = nextAnniversaryDate,
+                type = DaysUntilType.Special
+            )
+            result.add(item)
+            nextAnniversaryDate = nextAnniversaryDate.plus(DatePeriod(years = 1))
+        }
+
+        return result
+    }
+
+    private fun getMultiplesOf100For3Years(
         now: LocalDate,
         startingDate: LocalDate
     ): List<DaysUntilItem> {
@@ -73,93 +145,31 @@ class GenerateDaysLeft(
 
         val startDaysDiff = startingDate.daysUntil(now)
         val nextAmountOfDays = startDaysDiff + (100 - startDaysDiff % 100)
-        val nextDate = startingDate.plus(DatePeriod(days = nextAmountOfDays))
-        val daysLeft = now.daysUntil(nextDate)
+        var nextDate = startingDate.plus(DatePeriod(days = nextAmountOfDays))
+        val threeYearsFromNow = now.plus(DatePeriod(years = 3))
 
-        for (i in 0..400 step 100) {
+        while (nextDate <= threeYearsFromNow) {
             val item = DaysUntilItem(
-                title = "${nextAmountOfDays + i} Days",
-                daysUntil = daysLeft + i,
+                title = getTitleForDays(startingDate.daysUntil(nextDate)),
+                daysUntil = now.daysUntil(nextDate),
+                date = nextDate,
                 type = DaysUntilType.Other
             )
             result.add(item)
+            nextDate = nextDate.plus(DatePeriod(days = 100))
         }
         return result
     }
 
-    private fun getNextAnniversary(
-        now: LocalDate,
-        specialDate: LocalDate
-    ): DaysUntilItem {
-        val anniversaryDateThisYear = LocalDate(
-            year = now.year,
-            month = specialDate.month,
-            dayOfMonth = specialDate.dayOfMonth
-        )
-
-        val nextAnniversaryDate = if (now.daysUntil(anniversaryDateThisYear) < 0) {
-            anniversaryDateThisYear.plus(DatePeriod(years = 1))
-        } else anniversaryDateThisYear
-
-        val daysUntilNextAnniversary = now.daysUntil(nextAnniversaryDate)
-        val yearsTogether = specialDate.yearsUntil(nextAnniversaryDate)
-        return DaysUntilItem(
-            title = if (yearsTogether > 1) "$yearsTogether years" else "$yearsTogether year",
-            daysUntil = daysUntilNextAnniversary,
-            type = DaysUntilType.Special
-        )
+    private fun getTitleForDays(daysAmount: Int): String {
+        return if (daysAmount == 1) "1 Day" else "$daysAmount Days"
     }
 
-    private fun getNextMonthiversary(
-        now: LocalDate,
-        specialDate: LocalDate
-    ): DaysUntilItem {
-        val monthiversaryDateThisMonth = LocalDate(
-            year = now.year,
-            month = now.month,
-            dayOfMonth = specialDate.dayOfMonth
-        )
-
-        val nextMonthiversaryDate = if (now.daysUntil(monthiversaryDateThisMonth) < 0) {
-            monthiversaryDateThisMonth.plus(DatePeriod(months = 1))
-        } else monthiversaryDateThisMonth
-
-        val monthsAmount = specialDate.monthsUntil(nextMonthiversaryDate)
-
-        return DaysUntilItem(
-            title = "$monthsAmount Month(s)",
-            daysUntil = now.daysUntil(nextMonthiversaryDate),
-            type = DaysUntilType.Special
-        )
+    private fun getTitleForMonths(monthsAmount: Int): String {
+        return if (monthsAmount == 1) "1 Month" else "$monthsAmount Months"
     }
 
-//    private fun getMonthiversariesForYear(
-//        now: LocalDate,
-//        specialDate: LocalDate
-//    ): List<DaysUntilItem> {
-//        val result = mutableListOf<DaysUntilItem>()
-//        val yearFromNow = now.plus(DatePeriod(years = 1))
-//
-//        val monthiversaryDateThisMonth = LocalDate(
-//            year = now.year,
-//            month = now.month,
-//            dayOfMonth = specialDate.dayOfMonth
-//        )
-//
-//        var nextMonthiversaryDate = if (now.daysUntil(monthiversaryDateThisMonth) < 0) {
-//            monthiversaryDateThisMonth.plus(DatePeriod(months = 1))
-//        } else monthiversaryDateThisMonth
-//
-//        while (nextMonthiversaryDate <= yearFromNow) {
-//            val monthsAmount = specialDate.monthsUntil(nextMonthiversaryDate)
-//            val item = DaysUntilItem(
-//                title = if (monthsAmount > 1) "$monthsAmount months" else "$monthsAmount month",
-//                daysUntil = now.daysUntil(nextMonthiversaryDate),
-//                type = DaysUntilType.Special
-//            )
-//            if (monthsAmount % 12 != 0 && monthsAmount % 3 == 0) result.add(item)
-//            nextMonthiversaryDate = nextMonthiversaryDate.plus(DatePeriod(months = 1))
-//        }
-//        return result
-//    }
+    private fun getTitleForYears(yearsAmount: Int): String {
+        return if (yearsAmount == 1) "1 Year" else "$yearsAmount Years"
+    }
 }

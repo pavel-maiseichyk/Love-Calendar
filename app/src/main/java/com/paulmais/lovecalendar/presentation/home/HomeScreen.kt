@@ -72,6 +72,7 @@ private fun HomeScreen(
                 items(state.daysUntilList) { item ->
                     DaysUntilComponent(daysUntilItem = item)
                 }
+                item { Spacer(modifier = Modifier.height(4.dp)) }
             }
         }
     }

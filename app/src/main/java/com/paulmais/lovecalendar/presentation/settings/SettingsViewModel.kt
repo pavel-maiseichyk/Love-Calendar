@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulmais.lovecalendar.domain.repository.MeetingsDataSource
+import com.paulmais.lovecalendar.domain.util.DateUtil
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +12,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.daysUntil
+import kotlinx.datetime.until
 
 class SettingsViewModel(
     private val meetingsDataSource: MeetingsDataSource
@@ -54,12 +57,14 @@ class SettingsViewModel(
                     try {
                         val date =
                             state.value.specialDateTextFieldState.text.toString().formatToISO()
+
+                        if (date.daysUntil(DateUtil.now()) < 0) {
+                            eventChannel.send(SettingsEvent.ShowToast(message = "The date cannot be later than today."))
+                            return@launch
+                        }
                         meetingsDataSource.updateStartingDate(date)
                         _state.update { it.copy(isEditingSpecialDate = false) }
                         eventChannel.send(SettingsEvent.ShowToast(message = "Saved successfully!"))
-                    } catch (e: IllegalArgumentException) {
-                        println(e)
-                        eventChannel.send(SettingsEvent.ShowToast(message = "Please, enter the correct date."))
                     } catch (e: Exception) {
                         println(e)
                         eventChannel.send(SettingsEvent.ShowToast(message = "Failure. Please, check your date again."))
