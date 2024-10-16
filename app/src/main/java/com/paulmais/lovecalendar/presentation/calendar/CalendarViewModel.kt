@@ -1,7 +1,6 @@
 package com.paulmais.lovecalendar.presentation.calendar
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulmais.lovecalendar.domain.model.DateType.*
@@ -12,11 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
@@ -30,19 +26,11 @@ class CalendarViewModel(
 ) : ViewModel() {
 
     private var editedMeetings = mutableStateListOf<LocalDate>()
-    private val mutex = Mutex()
 
     private val _state = MutableStateFlow(CalendarState())
     val state = _state.asStateFlow()
 
     init {
-        snapshotFlow { editedMeetings.toList() }
-            .onEach { list ->
-                if (list.isNotEmpty()) updateDates(meetings = list)
-                else updateDates(state.value.meetings)
-            }
-            .launchIn(viewModelScope)
-
         combine(
             meetingsDataSource.getMeetings(),
             meetingsDataSource.getStartingDate()
@@ -58,11 +46,9 @@ class CalendarViewModel(
         when (action) {
             CalendarAction.OnConfirmEditClick -> {
                 viewModelScope.launch {
-                    mutex.withLock {
-                        meetingsDataSource.updateMeetings(editedMeetings)
-                        editedMeetings.clear()
-                        _state.update { it.copy(isInEditMode = false) }
-                    }
+                    meetingsDataSource.updateMeetings(editedMeetings)
+                    editedMeetings.clear()
+                    _state.update { it.copy(isInEditMode = false) }
                 }
             }
 
@@ -76,6 +62,7 @@ class CalendarViewModel(
 
                     else -> editedMeetings.add(action.appDate.date)
                 }
+                updateDates(editedMeetings)
             }
 
             CalendarAction.OnEditClick -> {
@@ -85,6 +72,7 @@ class CalendarViewModel(
 
             CalendarAction.OnUndoEditClick -> {
                 editedMeetings.clear()
+                updateDates(state.value.meetings)
                 _state.update { it.copy(isInEditMode = false) }
             }
         }
@@ -121,26 +109,28 @@ class CalendarViewModel(
         meetings: List<LocalDate>,
         specialDayNumber: Int
     ) {
-        _state.update {
-            val now = DateUtil.now()
-            val firstMonthData = calculateMonthData(
-                now = now,
-                meetings = meetings,
-                monthsOffset = 0,
-                specialDayNumber = specialDayNumber
-            )
-            val secondMonthData = calculateMonthData(
-                now = now,
-                meetings = meetings,
-                monthsOffset = 1,
-                specialDayNumber = specialDayNumber
-            )
+        val now = DateUtil.now()
+        val firstMonthData = calculateMonthData(
+            now = now,
+            meetings = meetings,
+            monthsOffset = 0,
+            specialDayNumber = specialDayNumber
+        )
+        val secondMonthData = calculateMonthData(
+            now = now,
+            meetings = meetings,
+            monthsOffset = 1,
+            specialDayNumber = specialDayNumber
+        )
+        val daysLeftText = meetings.sorted().find { it >= now }
+            ?.let { createDaysLeftText(now = now, nextMeeting = it) } ?: "None"
 
+        _state.update {
             it.copy(
                 firstMonthData = firstMonthData,
                 secondMonthData = secondMonthData,
                 meetings = meetings,
-                daysLeftText = createDaysLeftText(now = now, meetings = meetings),
+                daysLeftText = daysLeftText,
                 specialDayNumber = specialDayNumber
             )
         }
@@ -182,12 +172,9 @@ class CalendarViewModel(
 
     private fun createDaysLeftText(
         now: LocalDate,
-        meetings: List<LocalDate>
+        nextMeeting: LocalDate
     ): String {
-        val nextMeeting = meetings.sorted().find { it >= now }
-        val dateDiff = nextMeeting?.let { now.daysUntil(it) }
-        return when (dateDiff) {
-            null -> "None"
+        return when (val dateDiff = now.daysUntil(nextMeeting)) {
             0 -> "Today"
             1 -> "1 Day Left"
             else -> "$dateDiff Days Left"
