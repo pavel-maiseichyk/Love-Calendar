@@ -46,11 +46,22 @@ fun DaysUntilComponent(
         }
     }
 
+    val daysText = when {
+        daysUntilItem.isShowingDate -> daysUntilItem.date
+        !daysUntilItem.isShowingDate && daysUntilItem.daysUntil == "0" -> "TODAY"
+        else -> daysUntilItem.daysUntil
+    }
+
     val textStyle = TextStyle(
         color = MaterialTheme.colorScheme.onSurface,
         fontSize = 24.sp,
         fontFamily = montserrat
     )
+
+    val daysTextStyle = when {
+        daysUntilItem.isShowingDate || daysUntilItem.daysUntil == "0" -> textStyle.copy(fontSize = 22.sp)
+        else -> textStyle
+    }
 
     Box(
         modifier = modifier
@@ -73,8 +84,8 @@ fun DaysUntilComponent(
                 style = textStyle
             )
             Text(
-                text = if (daysUntilItem.isShowingDate) daysUntilItem.date else daysUntilItem.daysUntil,
-                style = if (daysUntilItem.isShowingDate) textStyle.copy(fontSize = 22.sp) else textStyle
+                text = daysText,
+                style = daysTextStyle
             )
         }
     }
