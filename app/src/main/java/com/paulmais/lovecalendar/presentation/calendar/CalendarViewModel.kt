@@ -70,7 +70,7 @@ class CalendarViewModel(
                 if (!state.value.isInEditMode) return
 
                 when (action.appDate.type) {
-                    TODAY_MEETING, PAST_MEETING, FUTURE_MEETING, SPECIAL_MEETING -> {
+                    TODAY_MEETING, PAST_MEETING, FUTURE_MEETING, SPECIAL_MEETING, TODAY_MEETING_SPECIAL -> {
                         editedMeetings.remove(action.appDate.date)
                     }
 

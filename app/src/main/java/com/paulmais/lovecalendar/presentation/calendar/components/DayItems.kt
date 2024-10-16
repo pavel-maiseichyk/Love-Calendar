@@ -7,10 +7,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,14 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulmais.lovecalendar.R
 import com.paulmais.lovecalendar.domain.model.DateType
-import com.paulmais.lovecalendar.domain.model.DateType.FUTURE_MEETING
-import com.paulmais.lovecalendar.domain.model.DateType.NORMAL
-import com.paulmais.lovecalendar.domain.model.DateType.PAST
-import com.paulmais.lovecalendar.domain.model.DateType.PAST_MEETING
-import com.paulmais.lovecalendar.domain.model.DateType.SPECIAL
-import com.paulmais.lovecalendar.domain.model.DateType.SPECIAL_MEETING
-import com.paulmais.lovecalendar.domain.model.DateType.TODAY
-import com.paulmais.lovecalendar.domain.model.DateType.TODAY_MEETING
+import com.paulmais.lovecalendar.domain.model.DateType.*
 import com.paulmais.lovecalendar.presentation.ui.theme.futureMeetingColor
 import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
 import com.paulmais.lovecalendar.presentation.ui.theme.pastMeetingColor
@@ -58,11 +53,20 @@ fun DayItem(
             when (type) {
                 NORMAL -> Color.White
                 PAST -> surface
-                TODAY, TODAY_MEETING -> primary
+                TODAY, TODAY_MEETING, TODAY_MEETING_SPECIAL, TODAY_SPECIAL -> primary
                 PAST_MEETING -> pastMeetingColor
                 FUTURE_MEETING -> futureMeetingColor
                 SPECIAL, SPECIAL_MEETING -> specialColor
             }
+        }
+        val mainIndicatorColor = remember(type) {
+            if (type == TODAY_MEETING || type == SPECIAL_MEETING || type == TODAY_MEETING_SPECIAL) {
+                futureMeetingColor
+            } else null
+        }
+
+        val additionalIndicatorColor = remember(type) {
+            if (type == TODAY_MEETING_SPECIAL || type == TODAY_SPECIAL) specialColor else null
         }
 
         val border = remember(type) {
@@ -84,6 +88,15 @@ fun DayItem(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
+                Indicator(
+                    indicatorColor = mainIndicatorColor,
+                    isMainIndicator = true
+                )
+                Indicator(
+                    indicatorColor = additionalIndicatorColor,
+                    isMainIndicator = false
+                )
+
                 if (type == PAST || type == PAST_MEETING) {
                     Image(
                         painter = painterResource(id = R.drawable.before_month),
@@ -98,6 +111,28 @@ fun DayItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun BoxScope.Indicator(
+    indicatorColor: Color?,
+    isMainIndicator: Boolean,
+    modifier: Modifier = Modifier
+) {
+    if (indicatorColor != null) {
+        Box(
+            modifier = modifier
+                .padding(4.dp)
+                .size(8.dp)
+                .clip(CircleShape)
+                .border(shape = CircleShape, border = BorderStroke(0.75.dp, Color.Black))
+                .background(indicatorColor)
+                .let {
+                    if (isMainIndicator) it.align(Alignment.TopEnd)
+                    else it.align(Alignment.TopStart)
+                }
+        )
     }
 }
 

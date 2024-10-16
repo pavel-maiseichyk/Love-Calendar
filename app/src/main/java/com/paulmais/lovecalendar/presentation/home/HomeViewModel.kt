@@ -34,7 +34,8 @@ class HomeViewModel(
                             if (item.title == action.title) {
                                 item.copy(isShowingDate = !item.isShowingDate)
                             } else item
-                        })
+                        }
+                    )
                 }
             }
         }

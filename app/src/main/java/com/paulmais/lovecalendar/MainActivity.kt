@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val homeScreenViewModel = getViewModel<HomeViewModel>()
-        val calendarViewModel = getViewModel<CalendarViewModel>()
+        val calendarScreenViewModel = getViewModel<CalendarViewModel>()
 
         setContent {
             installSplashScreen().setKeepOnScreenCondition {
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(paddingValues)
                     ) {
                         composable<HomeScreen> { HomeScreenRoot(homeScreenViewModel) }
-                        composable<CalendarScreen> { CalendarScreenRoot(calendarViewModel) }
+                        composable<CalendarScreen> { CalendarScreenRoot(calendarScreenViewModel) }
                         composable<SettingsScreen> { SettingsScreenRoot() }
                     }
                 }

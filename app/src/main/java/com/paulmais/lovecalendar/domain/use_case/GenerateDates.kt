@@ -30,12 +30,13 @@ class GenerateDates {
                     currentDate < now -> DateType.PAST_MEETING
                     currentDate > now && currentDate.dayOfMonth == specialDayNumber -> DateType.SPECIAL_MEETING
                     currentDate > now -> DateType.FUTURE_MEETING
-                    currentDate == now && currentDate.dayOfMonth == specialDayNumber -> DateType.SPECIAL
+                    currentDate == now && currentDate.dayOfMonth == specialDayNumber -> DateType.TODAY_MEETING_SPECIAL
                     currentDate == now -> DateType.TODAY_MEETING
                     else -> DateType.TODAY_MEETING
                 }
             } else {
                 when {
+                    currentDate.dayOfMonth == specialDayNumber && currentDate == now -> DateType.TODAY_SPECIAL
                     currentDate.dayOfMonth == specialDayNumber -> DateType.SPECIAL
                     currentDate == now -> DateType.TODAY
                     currentDate < now -> DateType.PAST
