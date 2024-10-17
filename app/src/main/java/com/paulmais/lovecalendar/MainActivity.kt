@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             installSplashScreen().setKeepOnScreenCondition {
-                homeScreenViewModel.state.value.daysUntilUIList.isEmpty()
+                homeScreenViewModel.state.value.isLoading
             }
 
             LoveCalendarTheme {
