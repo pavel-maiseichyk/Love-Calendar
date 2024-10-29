@@ -55,13 +55,12 @@ class CalendarViewModel(
             is CalendarAction.OnDateTap -> {
                 if (!state.value.isInEditMode) return
 
-                when (action.appDate.type) {
-                    TODAY_MEETING, PAST_MEETING, FUTURE_MEETING, SPECIAL_MEETING, TODAY_MEETING_SPECIAL -> {
-                        editedMeetings.remove(action.appDate.date)
-                    }
-
-                    else -> editedMeetings.add(action.appDate.date)
+                if (MEETING in action.appDate.types) {
+                    editedMeetings.remove(action.appDate.date)
+                } else {
+                    editedMeetings.add(action.appDate.date)
                 }
+
                 updateDates(editedMeetings)
             }
 
@@ -89,14 +88,14 @@ class CalendarViewModel(
                 year = now.year,
                 meetings = meetings,
                 specialDayNumber = state.value.specialDayNumber
-            )
+            ).map { date -> date.toAppDateUI() }
             val secondMonthDates = generateDates.execute(
                 now = now,
                 month = now.plus(DatePeriod(months = 1)).month,
                 year = now.plus(DatePeriod(months = 1)).year,
                 meetings = meetings,
                 specialDayNumber = state.value.specialDayNumber
-            )
+            ).map { date -> date.toAppDateUI() }
 
             it.copy(
                 firstMonthData = state.value.firstMonthData.copy(dates = firstMonthDates),
@@ -151,7 +150,7 @@ class CalendarViewModel(
             year = year,
             meetings = meetings,
             specialDayNumber = specialDayNumber
-        )
+        ).map { date -> date.toAppDateUI() }
         val firstDayOfWeekPosition = findFirstDayOfMonthPosition(
             month = month, year = year
         )

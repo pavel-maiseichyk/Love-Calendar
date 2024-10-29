@@ -6,10 +6,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,12 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.paulmais.lovecalendar.domain.model.AppDate
+import com.paulmais.lovecalendar.presentation.calendar.AppDateUI
 import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
@@ -36,15 +37,18 @@ fun MonthItem(
     year: String,
     firstDayPosition: Int,
     emptyDatesAmount: Int,
-    dates: List<AppDate>,
-    onDateTap: (AppDate) -> Unit,
+    dates: List<AppDateUI>,
+    onDateTap: (AppDateUI) -> Unit,
+    dayItemSize: Dp,
     modifier: Modifier = Modifier
 ) {
-    val rows = remember(firstDayPosition, emptyDatesAmount, dates) {
-        (List(firstDayPosition) { 0 } + dates + List(emptyDatesAmount) { 0 }).chunked(7)
+    val gridHeight = remember(emptyDatesAmount, dates.size, dayItemSize) {
+        calculateGridHeight(
+            emptyDatesAmount = emptyDatesAmount,
+            datesAmount = dates.size,
+            daySize = dayItemSize
+        )
     }
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val dayItemSize = calculateDaySize(base = screenWidth)
 
     Column(
         modifier = modifier
@@ -70,44 +74,50 @@ fun MonthItem(
                 text = year, fontFamily = montserrat, fontSize = 28.sp
             )
         }
-        rows.forEach { rowItems ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                rowItems.forEach { date ->
-                    when {
-                        isCurrent && date !is AppDate && rowItems == rows[0] -> {
-                            DayBeforeItem(
-                                size = dayItemSize
-                            )
-                        }
-
-                        date !is AppDate -> {
-                            DayAfterItem(
-                                size = dayItemSize
-                            )
-                        }
-
-                        else -> {
-                            DayItem(
-                                onClick = { onDateTap(date) },
-                                text = date.date.dayOfMonth.toString(),
-                                type = date.type,
-                                isClickable = isEditing,
-                                size = dayItemSize
-                            )
-                        }
-                    }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(7),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(gridHeight),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            userScrollEnabled = false
+        ) {
+            items(count = firstDayPosition, key = { it }) {
+                if (isCurrent) {
+                    DayBeforeItem(
+                        size = dayItemSize
+                    )
+                } else {
+                    DayAfterItem(size = dayItemSize)
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            items(items = dates, key = { it.date.toString() }) { date ->
+                DayItem(
+                    onClick = { onDateTap(date) },
+                    text = date.date.dayOfMonth.toString(),
+                    appDateUI = date,
+                    isClickable = isEditing,
+                    size = dayItemSize
+                )
+            }
+            items(count = emptyDatesAmount, key = { dates.size - it }) {
+                DayAfterItem(
+                    size = dayItemSize
+                )
+            }
         }
     }
 }
 
-private fun calculateDaySize(base: Dp): Dp {
-    return (base - 16.dp * 4 - 1.dp * 2 - 8.dp * 6) / 7
+private fun calculateGridHeight(
+    emptyDatesAmount: Int,
+    datesAmount: Int,
+    padding: Dp = 8.dp,
+    daySize: Dp
+): Dp {
+    val rowAmount = (emptyDatesAmount + datesAmount + 6) / 7
+    return (daySize + padding) * rowAmount
 }
 
 @Preview
@@ -121,12 +131,13 @@ private fun MonthItemPreview() {
         firstDayPosition = 2,
         emptyDatesAmount = 2,
         dates = (1..31).map { day ->
-            AppDate(
+            AppDateUI(
                 LocalDate(
                     year = 2020, monthNumber = 1, dayOfMonth = day
                 )
             )
         },
-        onDateTap = {}
+        onDateTap = {},
+        dayItemSize = 20.dp
     )
 }

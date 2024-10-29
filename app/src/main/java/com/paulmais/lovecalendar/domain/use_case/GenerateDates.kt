@@ -25,28 +25,20 @@ class GenerateDates {
                 dayOfMonth = day
             )
 
-            val type = if (meetings.contains(currentDate)) {
-                when {
-                    currentDate < now -> DateType.PAST_MEETING
-                    currentDate > now && currentDate.dayOfMonth == specialDayNumber -> DateType.SPECIAL_MEETING
-                    currentDate > now -> DateType.FUTURE_MEETING
-                    currentDate == now && currentDate.dayOfMonth == specialDayNumber -> DateType.TODAY_MEETING_SPECIAL
-                    currentDate == now -> DateType.TODAY_MEETING
-                    else -> DateType.TODAY_MEETING
-                }
-            } else {
-                when {
-                    currentDate.dayOfMonth == specialDayNumber && currentDate == now -> DateType.TODAY_SPECIAL
-                    currentDate.dayOfMonth == specialDayNumber -> DateType.SPECIAL
-                    currentDate == now -> DateType.TODAY
-                    currentDate < now -> DateType.PAST
-                    else -> DateType.NORMAL
-                }
+            val types = buildSet {
+                if (currentDate == now) add(DateType.TODAY)
+                else if (currentDate < now) add(DateType.PAST)
+                else add(DateType.FUTURE)
+
+                if (meetings.contains(currentDate)) add(DateType.MEETING)
+                if (currentDate.dayOfMonth == specialDayNumber) add(DateType.SPECIAL)
+
+                if (isEmpty()) add(DateType.FUTURE)
             }
 
             dates[day - 1] = AppDate(
                 date = currentDate,
-                type = type
+                types = types
             )
         }
         return dates

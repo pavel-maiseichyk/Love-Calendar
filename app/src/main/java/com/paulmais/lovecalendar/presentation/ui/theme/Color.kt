@@ -14,6 +14,7 @@ val Cornflower_Lilac = Color(0xFFFFACAC)
 val pastMeetingColor = Perano
 val futureMeetingColor = Sindbad
 val specialColor = Cornflower_Lilac
+val todayColor = Sidecar
 
 val appLightColors = lightColorScheme(
     primary = Sidecar,

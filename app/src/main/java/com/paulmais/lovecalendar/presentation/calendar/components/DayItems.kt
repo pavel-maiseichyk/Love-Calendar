@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.paulmais.lovecalendar.R
 import com.paulmais.lovecalendar.domain.model.DateType
 import com.paulmais.lovecalendar.domain.model.DateType.*
+import com.paulmais.lovecalendar.presentation.calendar.AppDateUI
 import com.paulmais.lovecalendar.presentation.ui.theme.futureMeetingColor
 import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
 import com.paulmais.lovecalendar.presentation.ui.theme.pastMeetingColor
@@ -43,73 +44,47 @@ import com.paulmais.lovecalendar.presentation.ui.theme.specialColor
 fun DayItem(
     onClick: () -> Unit,
     text: String,
-    type: DateType,
+    appDateUI: AppDateUI,
     isClickable: Boolean,
     modifier: Modifier = Modifier,
     size: Dp
 ) {
-    with(MaterialTheme.colorScheme) {
-        val backgroundColor = remember(type) {
-            when (type) {
-                NORMAL -> Color.White
-                PAST -> surface
-                TODAY, TODAY_MEETING, TODAY_MEETING_SPECIAL, TODAY_SPECIAL -> primary
-                PAST_MEETING -> pastMeetingColor
-                FUTURE_MEETING -> futureMeetingColor
-                SPECIAL, SPECIAL_MEETING -> specialColor
-            }
-        }
-        val mainIndicatorColor = remember(type) {
-            if (type == TODAY_MEETING || type == SPECIAL_MEETING || type == TODAY_MEETING_SPECIAL) {
-                futureMeetingColor
-            } else null
-        }
-
-        val additionalIndicatorColor = remember(type) {
-            if (type == TODAY_MEETING_SPECIAL || type == TODAY_SPECIAL) specialColor else null
-        }
-
-        val border = remember(type) {
-            if (type == PAST) null else BorderStroke(1.dp, Color.Black)
-        }
-
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = backgroundColor,
-                contentColor = onSurface
-            ),
-            border = border,
-            modifier = modifier
-                .clip(RoundedCornerShape(12.dp))
-                .size(size)
-                .clickable(enabled = isClickable, onClick = onClick)
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = appDateUI.backgroundColor,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        border = appDateUI.border,
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .size(size)
+            .clickable(enabled = isClickable, onClick = onClick)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Indicator(
-                    indicatorColor = mainIndicatorColor,
-                    isMainIndicator = true
-                )
-                Indicator(
-                    indicatorColor = additionalIndicatorColor,
-                    isMainIndicator = false
-                )
+            Indicator(
+                indicatorColor = appDateUI.mainIndicatorColor,
+                isMainIndicator = true
+            )
+            Indicator(
+                indicatorColor = appDateUI.additionalIndicatorColor,
+                isMainIndicator = false
+            )
 
-                if (type == PAST || type == PAST_MEETING) {
-                    Image(
-                        painter = painterResource(id = R.drawable.before_month),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.7f))
-                    )
-                }
-                Text(
-                    text = text,
-                    fontFamily = montserrat,
-                    fontSize = 20.sp
+            if (PAST in appDateUI.types) {
+                Image(
+                    painter = painterResource(id = R.drawable.before_month),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.7f))
                 )
             }
+            Text(
+                text = text,
+                fontFamily = montserrat,
+                fontSize = 20.sp
+            )
         }
     }
 }
@@ -185,7 +160,7 @@ fun DayItemPreview() {
             DayItem(
                 onClick = { },
                 text = "${index + 1}",
-                type = type,
+                appDateUI = AppDateUI(),
                 isClickable = false,
                 size = 40.dp
             )

@@ -67,7 +67,10 @@ private fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
-                items(state.daysUntilUIList) { item ->
+                items(
+                    items = state.daysUntilUIList,
+                    key = { it.title }
+                ) { item ->
                     DaysUntilComponent(
                         daysUntilItem = item,
                         onClick = { onAction(HomeAction.OnItemClick(item.title)) }

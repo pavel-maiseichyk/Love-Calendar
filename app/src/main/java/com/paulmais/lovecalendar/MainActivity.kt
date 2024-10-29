@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
             androidContext(this@MainActivity)
             modules(appModule)
         }
-
+        // TODO: replace with KoinApplication(application = { modules(appModule) })
         val homeScreenViewModel = getViewModel<HomeViewModel>()
         val calendarScreenViewModel = getViewModel<CalendarViewModel>()
 

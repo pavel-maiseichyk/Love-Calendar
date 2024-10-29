@@ -12,9 +12,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.paulmais.lovecalendar.R
@@ -22,6 +25,7 @@ import com.paulmais.lovecalendar.presentation.components.MyTopBar
 import com.paulmais.lovecalendar.presentation.calendar.components.MonthItem
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.androidx.compose.koinViewModel
+import kotlin.math.ceil
 
 @Composable
 fun CalendarScreenRoot(
@@ -40,6 +44,9 @@ private fun CalendarScreen(
     state: CalendarState,
     onAction: (CalendarAction) -> Unit
 ) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val dayItemSize = remember { calculateDaySize(base = screenWidth) }
+
     Scaffold(
         topBar = {
             MyTopBar(
@@ -73,6 +80,7 @@ private fun CalendarScreen(
                 emptyDatesAmount = state.firstMonthData.emptyDatesAmount,
                 dates = state.firstMonthData.dates,
                 onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
+                dayItemSize = dayItemSize
             )
             Spacer(modifier = Modifier.height(16.dp))
             MonthItem(
@@ -84,10 +92,15 @@ private fun CalendarScreen(
                 emptyDatesAmount = state.secondMonthData.emptyDatesAmount,
                 dates = state.secondMonthData.dates,
                 onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
+                dayItemSize = dayItemSize
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
+}
+
+private fun calculateDaySize(base: Dp): Dp {
+    return (base - 16.dp * 4 - 1.dp * 2 - 8.dp * 6) / 7
 }
 
 @Preview
