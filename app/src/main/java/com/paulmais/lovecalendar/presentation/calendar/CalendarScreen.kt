@@ -17,10 +17,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +40,7 @@ import com.paulmais.lovecalendar.presentation.calendar.components.ChangeMonthBut
 import com.paulmais.lovecalendar.presentation.calendar.components.DaysUntilComponent
 import com.paulmais.lovecalendar.presentation.calendar.components.MonthItem
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -66,6 +69,8 @@ private fun CalendarScreen(
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val dayItemSize = remember { calculateDaySize(base = screenWidth) }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -95,6 +100,7 @@ private fun CalendarScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
                 .background(Color.White),
+            state = listState,
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -149,7 +155,12 @@ private fun CalendarScreen(
                     DaysUntilComponent(
                         modifier = Modifier.animateItem(),
                         daysUntilItem = item,
-                        onClick = { onAction(CalendarAction.OnDaysUntilComponentClick(item)) }
+                        onClick = {
+                            coroutineScope.launch {
+                                onAction(CalendarAction.OnDaysUntilComponentClick(item.date))
+                                listState.animateScrollToItem(0)
+                            }
+                        }
                     )
                 }
             }

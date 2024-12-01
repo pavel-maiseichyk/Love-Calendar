@@ -1,5 +1,7 @@
 package com.paulmais.lovecalendar.presentation.calendar
 
+import kotlinx.datetime.LocalDate
+
 
 sealed class CalendarAction {
     data object OnSettingsClick: CalendarAction()
@@ -10,5 +12,5 @@ sealed class CalendarAction {
     data object OnPreviousClick: CalendarAction()
     data object OnNextClick: CalendarAction()
     data class OnDateTap(val appDate: AppDateUI): CalendarAction()
-    data class OnDaysUntilComponentClick(val daysUntilItemUI: DaysUntilItemUI): CalendarAction()
+    data class OnDaysUntilComponentClick(val date: LocalDate): CalendarAction()
 }

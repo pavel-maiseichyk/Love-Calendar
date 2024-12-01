@@ -129,13 +129,12 @@ class CalendarViewModel(
                 selectedDate.value = selectedDate.value.plus(DatePeriod(months = 1))
             }
 
-            CalendarAction.OnSettingsClick -> {
-
-            }
-
             is CalendarAction.OnDaysUntilComponentClick -> {
-
+                val dateAtStartOfMonth = DateUtil.localDateAtStartOfMonth(action.date)
+                selectedDate.value = dateAtStartOfMonth
             }
+
+            else -> Unit
         }
     }
 

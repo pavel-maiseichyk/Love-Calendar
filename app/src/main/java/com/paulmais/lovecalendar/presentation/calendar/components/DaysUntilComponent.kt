@@ -32,6 +32,7 @@ import com.paulmais.lovecalendar.presentation.ui.theme.red
 import com.paulmais.lovecalendar.presentation.ui.theme.red_container
 import com.paulmais.lovecalendar.presentation.ui.theme.yellow
 import com.paulmais.lovecalendar.presentation.ui.theme.yellow_container
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun DaysUntilComponent(
@@ -106,7 +107,7 @@ private fun DaysUntilComponentPreview() {
             daysUntilItem = DaysUntilItemUI(
                 title = "Monthiversary",
                 daysUntil = "15",
-                date = "20.02.2022",
+                date = LocalDate(year = 2022, monthNumber = 2, dayOfMonth = 20),
                 type = Other,
                 isShowingDate = false,
             ),

@@ -23,6 +23,12 @@ object DateUtil {
         year = year
     )
 
+    fun localDateAtStartOfMonth(date: LocalDate): LocalDate = LocalDate(
+        dayOfMonth = 1,
+        month = date.month,
+        year = date.year
+    )
+
     fun daysInMonth(month: Month, year: Int): Int {
         return if (month.number != 12)
             LocalDate(
