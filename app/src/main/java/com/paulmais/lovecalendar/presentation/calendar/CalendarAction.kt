@@ -1,5 +1,7 @@
 package com.paulmais.lovecalendar.presentation.calendar
 
+import com.paulmais.lovecalendar.presentation.home.components.DaysUntilItemUI
+
 sealed class CalendarAction {
     data object OnSettingsClick: CalendarAction()
     data object OnEditClick: CalendarAction()
@@ -9,4 +11,5 @@ sealed class CalendarAction {
     data object OnPreviousClick: CalendarAction()
     data object OnNextClick: CalendarAction()
     data class OnDateTap(val appDate: AppDateUI): CalendarAction()
+    data class OnDaysUntilComponentClick(val daysUntilItemUI: DaysUntilItemUI): CalendarAction()
 }

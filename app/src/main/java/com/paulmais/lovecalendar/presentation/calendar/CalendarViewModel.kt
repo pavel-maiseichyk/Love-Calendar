@@ -5,14 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.paulmais.lovecalendar.domain.model.DateType.*
 import com.paulmais.lovecalendar.domain.repository.MeetingsDataSource
 import com.paulmais.lovecalendar.domain.use_case.GenerateDates
+import com.paulmais.lovecalendar.domain.use_case.GenerateDaysLeft
 import com.paulmais.lovecalendar.domain.util.DateUtil
+import com.paulmais.lovecalendar.presentation.home.components.toDaysUntilItemUI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -27,7 +33,8 @@ import kotlinx.datetime.plus
 
 class CalendarViewModel(
     private val generateDates: GenerateDates,
-    private val meetingsDataSource: MeetingsDataSource
+    private val meetingsDataSource: MeetingsDataSource,
+    private val generateDaysLeft: GenerateDaysLeft
 ) : ViewModel() {
 
     private var editedMeetings = mutableStateListOf<LocalDate>()
@@ -39,6 +46,8 @@ class CalendarViewModel(
             selectedDate.value =
                 DateUtil.nowAtStartOfMonth() // Using first day of month for easier movements between months
             val now = DateUtil.now()
+
+            loadDaysLeft(now)
 
             combine(
                 meetingsDataSource.getMeetings(),
@@ -126,7 +135,23 @@ class CalendarViewModel(
             CalendarAction.OnSettingsClick -> {
 
             }
+
+            is CalendarAction.OnDaysUntilComponentClick -> {
+
+            }
         }
+    }
+
+    private fun loadDaysLeft(
+        now: LocalDate
+    ) {
+        generateDaysLeft.execute(now = now)
+            .distinctUntilChanged()
+            .onEach { days ->
+                val daysUntilUIList = days.map { it.toDaysUntilItemUI() }
+                _state.update { it.copy(daysUntilUIList = daysUntilUIList) }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun updateDates(
