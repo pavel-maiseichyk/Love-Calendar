@@ -213,8 +213,8 @@ class CalendarViewModel(
     ): String {
         return when (val dateDiff = now.daysUntil(nextMeeting)) {
             0 -> "Today"
-            1 -> "1 day left"
-            else -> "$dateDiff days left"
+            1 -> "1 day left..."
+            else -> "$dateDiff days left..."
         }
     }
 
