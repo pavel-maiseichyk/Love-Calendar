@@ -10,5 +10,5 @@ data class DaysUntilItem(
 )
 
 enum class DaysUntilType {
-    Meeting, Special, Other
+    Today, Meeting, Special, Other
 }

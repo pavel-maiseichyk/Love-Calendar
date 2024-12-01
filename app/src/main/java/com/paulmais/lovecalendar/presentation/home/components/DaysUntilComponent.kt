@@ -1,6 +1,5 @@
 package com.paulmais.lovecalendar.presentation.home.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,14 +20,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.paulmais.lovecalendar.domain.model.DaysUntilType.Meeting
-import com.paulmais.lovecalendar.domain.model.DaysUntilType.Other
-import com.paulmais.lovecalendar.domain.model.DaysUntilType.Special
-import com.paulmais.lovecalendar.presentation.ui.theme.Cornflower_Lilac
+import com.paulmais.lovecalendar.domain.model.DaysUntilType.*
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
-import com.paulmais.lovecalendar.presentation.ui.theme.Sidecar
-import com.paulmais.lovecalendar.presentation.ui.theme.Sindbad
+import com.paulmais.lovecalendar.presentation.ui.theme.dark_gray
+import com.paulmais.lovecalendar.presentation.ui.theme.green
+import com.paulmais.lovecalendar.presentation.ui.theme.green_container
 import com.paulmais.lovecalendar.presentation.ui.theme.jakarta
+import com.paulmais.lovecalendar.presentation.ui.theme.light_gray
+import com.paulmais.lovecalendar.presentation.ui.theme.red
+import com.paulmais.lovecalendar.presentation.ui.theme.red_container
+import com.paulmais.lovecalendar.presentation.ui.theme.yellow
+import com.paulmais.lovecalendar.presentation.ui.theme.yellow_container
 
 @Composable
 fun DaysUntilComponent(
@@ -37,42 +38,37 @@ fun DaysUntilComponent(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val background = remember {
-        if (daysUntilItem.daysUntil == "0") Sidecar
-        else when (daysUntilItem.type) {
-            Meeting -> Sindbad
-            Special -> Cornflower_Lilac
-            Other -> Color(0xFFFBFBFB)
-        }
+    val containerColor = when (daysUntilItem.type) {
+        Today -> yellow_container
+        Meeting -> green_container
+        Special -> red_container
+        else -> Color.White
+    }
+
+    val contentColor = when (daysUntilItem.type) {
+        Today -> yellow
+        Meeting -> green
+        Special -> red
+        else -> dark_gray
     }
 
     val daysText = when {
-        daysUntilItem.isShowingDate -> daysUntilItem.date
-        !daysUntilItem.isShowingDate && daysUntilItem.daysUntil == "0" -> "TODAY"
+        daysUntilItem.type == Today -> ""
         else -> daysUntilItem.daysUntil
-    }
-
-    val textStyle = TextStyle(
-        color = MaterialTheme.colorScheme.onSurface,
-        fontSize = 24.sp,
-        fontFamily = jakarta
-    )
-
-    val daysTextStyle = when {
-        daysUntilItem.isShowingDate || daysUntilItem.daysUntil == "0" -> textStyle.copy(fontSize = 22.sp)
-        else -> textStyle
     }
 
     Box(
         modifier = modifier
-            .clickable(onClick = onClick)
-            .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(background)
             .border(
-                border = BorderStroke(1.dp, Color.Black), shape = RoundedCornerShape(16.dp)
+                width = if (daysUntilItem.type == Other) 1.dp else 0.dp,
+                color = light_gray,
+                shape = RoundedCornerShape(16.dp)
             )
-            .padding(horizontal = 20.dp, vertical = 12.dp)
+            .fillMaxWidth()
+            .background(containerColor)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -81,11 +77,21 @@ fun DaysUntilComponent(
         ) {
             Text(
                 text = daysUntilItem.title,
-                style = textStyle
+                color = contentColor,
+                style = TextStyle(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 20.sp,
+                    fontFamily = jakarta
+                )
             )
             Text(
                 text = daysText,
-                style = daysTextStyle
+                color = contentColor,
+                style = TextStyle(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 20.sp,
+                    fontFamily = jakarta
+                )
             )
         }
     }

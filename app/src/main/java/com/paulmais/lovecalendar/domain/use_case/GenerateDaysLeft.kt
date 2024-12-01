@@ -28,6 +28,7 @@ class GenerateDaysLeft(
             ) { startingDate, meetings ->
                 val result = mutableListOf<DaysUntilItem>()
 
+                result.add(getToday(now = now))
                 getNextMeeting(now = now, meetings = meetings)?.let { result.add(it) }
 
                 startingDate?.let {
@@ -44,6 +45,17 @@ class GenerateDaysLeft(
                 result.sortedBy { it.daysUntil }
             }.collect { emit(it) }
         }
+    }
+
+    private fun getToday(
+        now: LocalDate,
+    ): DaysUntilItem {
+        return DaysUntilItem(
+            title = "Today",
+            daysUntil = 0,
+            date = now,
+            type = DaysUntilType.Today
+        )
     }
 
     private fun getNextMeeting(
