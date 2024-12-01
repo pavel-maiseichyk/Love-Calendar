@@ -1,5 +1,10 @@
 package com.paulmais.lovecalendar.presentation.calendar
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -96,10 +101,10 @@ private fun CalendarScreen(
             Spacer(modifier = Modifier.height(16.dp))
             MonthItem(
                 isEditing = state.isInEditMode,
-                month = state.firstMonthData.month.name,
-                year = state.firstMonthData.year.toString(),
-                firstDayPosition = state.firstMonthData.firstDayOfWeekPosition,
-                dates = state.firstMonthData.dates,
+                month = state.monthData.month.name,
+                year = state.monthData.year.toString(),
+                firstDayPosition = state.monthData.firstDayOfWeekPosition,
+                dates = state.monthData.dates,
                 onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
                 dayItemSize = dayItemSize
             )

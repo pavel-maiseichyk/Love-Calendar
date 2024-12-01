@@ -36,20 +36,36 @@ class CalendarViewModel(
     private val _state = MutableStateFlow(CalendarState())
     val state = _state
         .onStart {
-            selectedDate.value = DateUtil.nowWithFirstDayOfMonth() // Using first day of month for easier movements between months
+            selectedDate.value =
+                DateUtil.nowAtStartOfMonth() // Using first day of month for easier movements between months
+            val now = DateUtil.now()
 
             combine(
                 meetingsDataSource.getMeetings(),
                 meetingsDataSource.getStartingDate(),
                 snapshotFlow { selectedDate.value }
-            ) { meetings, specialDayNumber, date ->
-                reloadHomeState(
-                    now = DateUtil.now(),
-                    month = date.month,
-                    year = date.year,
+            ) { meetings, specialDayDate, selectedDate ->
+
+                val specialDayNumber = specialDayDate?.dayOfMonth ?: 0
+
+                val monthData = calculateMonthData(
+                    now = now,
+                    month = selectedDate.month,
+                    year = selectedDate.year,
                     meetings = meetings,
-                    specialDayNumber = specialDayNumber?.dayOfMonth ?: 0
+                    specialDayNumber = specialDayNumber
                 )
+                val daysLeftText = meetings.sorted().find { it >= now }
+                    ?.let { createDaysLeftText(now = now, nextMeeting = it) } ?: "None"
+
+                _state.update {
+                    it.copy(
+                        monthData = monthData,
+                        meetings = meetings,
+                        daysLeftText = daysLeftText,
+                        specialDayNumber = specialDayNumber
+                    )
+                }
             }.launchIn(viewModelScope)
         }
         .stateIn(
@@ -77,7 +93,11 @@ class CalendarViewModel(
                     editedMeetings.add(action.appDate.date)
                 }
 
-                updateDates(editedMeetings)
+                updateDates(
+                    now = DateUtil.now(),
+                    selectedDate = selectedDate.value,
+                    meetings = editedMeetings
+                )
             }
 
             CalendarAction.OnEditClick -> {
@@ -87,16 +107,22 @@ class CalendarViewModel(
 
             CalendarAction.OnUndoEditClick -> {
                 editedMeetings.clear()
-                updateDates(state.value.meetings)
+                updateDates(
+                    now = DateUtil.now(),
+                    selectedDate = selectedDate.value,
+                    meetings = state.value.meetings
+                )
                 _state.update { it.copy(isInEditMode = false) }
             }
 
             CalendarAction.OnPreviousClick -> {
                 selectedDate.value = selectedDate.value.minus(DatePeriod(months = 1))
             }
+
             CalendarAction.OnNextClick -> {
                 selectedDate.value = selectedDate.value.plus(DatePeriod(months = 1))
             }
+
             CalendarAction.OnSettingsClick -> {
 
             }
@@ -104,65 +130,38 @@ class CalendarViewModel(
     }
 
     private fun updateDates(
+        now: LocalDate,
+        selectedDate: LocalDate,
         meetings: List<LocalDate>
     ) {
         _state.update {
-            val now = DateUtil.now()
-            val firstMonthDates = generateDates.execute(
+            val monthDates = generateDates.execute(
                 now = now,
-                month = now.month,
-                year = now.year,
-                meetings = meetings,
-                specialDayNumber = state.value.specialDayNumber
-            ).map { date -> date.toAppDateUI() }
-            val secondMonthDates = generateDates.execute(
-                now = now,
-                month = now.plus(DatePeriod(months = 1)).month,
-                year = now.plus(DatePeriod(months = 1)).year,
+                month = selectedDate.month,
+                year = selectedDate.year,
                 meetings = meetings,
                 specialDayNumber = state.value.specialDayNumber
             ).map { date -> date.toAppDateUI() }
 
             it.copy(
-                firstMonthData = state.value.firstMonthData.copy(dates = firstMonthDates),
-                secondMonthData = state.value.secondMonthData.copy(dates = secondMonthDates)
-            )
-        }
-    }
-
-    private fun reloadHomeState(
-        now: LocalDate,
-        month: Month,
-        year: Int,
-        meetings: List<LocalDate>,
-        specialDayNumber: Int
-    ) {
-        val firstMonthData = calculateMonthData(
-            month = month,
-            year = year,
-            meetings = meetings,
-            specialDayNumber = specialDayNumber
-        )
-        val daysLeftText = meetings.sorted().find { it >= now }
-            ?.let { createDaysLeftText(now = now, nextMeeting = it) } ?: "None"
-
-        _state.update {
-            it.copy(
-                firstMonthData = firstMonthData,
-                meetings = meetings,
-                daysLeftText = daysLeftText,
-                specialDayNumber = specialDayNumber
+                monthData = state.value.monthData.copy(
+                    dates = monthDates,
+                    dateAtStartOfMonth = DateUtil.localDateAtStartOfMonth(
+                        month = selectedDate.month,
+                        year = selectedDate.year
+                    )
+                ),
             )
         }
     }
 
     private fun calculateMonthData(
+        now: LocalDate,
         month: Month,
         year: Int,
         meetings: List<LocalDate>,
         specialDayNumber: Int
     ): MonthData {
-        val now = DateUtil.now()
         val monthDates = generateDates.execute(
             now = now,
             month = month,

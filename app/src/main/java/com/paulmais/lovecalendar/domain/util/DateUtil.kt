@@ -4,7 +4,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 
@@ -12,10 +11,16 @@ object DateUtil {
 
     fun now(): LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
-    fun nowWithFirstDayOfMonth(): LocalDate = LocalDate(
+    fun nowAtStartOfMonth(): LocalDate = LocalDate(
         dayOfMonth = 1,
         month = now().month,
         year = now().year
+    )
+
+    fun localDateAtStartOfMonth(month: Month, year: Int): LocalDate = LocalDate(
+        dayOfMonth = 1,
+        month = month,
+        year = year
     )
 
     fun daysInMonth(month: Month, year: Int): Int {
