@@ -1,9 +1,8 @@
 package com.paulmais.lovecalendar.presentation.calendar
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.Transition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -36,8 +35,8 @@ import com.paulmais.lovecalendar.domain.util.DateUtil
 import com.paulmais.lovecalendar.presentation.calendar.components.CalendarTopBar
 import com.paulmais.lovecalendar.presentation.calendar.components.ChangeMonthButton
 import com.paulmais.lovecalendar.presentation.calendar.components.ChangeMonthButtonType
+import com.paulmais.lovecalendar.presentation.calendar.components.DaysUntilComponent
 import com.paulmais.lovecalendar.presentation.calendar.components.MonthItem
-import com.paulmais.lovecalendar.presentation.home.components.DaysUntilComponent
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -103,22 +102,24 @@ private fun CalendarScreen(
                 Column(
                     modifier = Modifier.padding(bottom = 12.dp)
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        ChangeMonthButton(
-                            type = ChangeMonthButtonType.PREVIOUS,
-                            modifier = Modifier.weight(1f),
-                            onClick = { onAction(CalendarAction.OnPreviousClick) }
-                        )
-                        ChangeMonthButton(
-                            type = ChangeMonthButtonType.NEXT,
-                            modifier = Modifier.weight(1f),
-                            onClick = { onAction(CalendarAction.OnNextClick) }
-                        )
+                    AnimatedVisibility(visible = !state.isInEditMode) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            ChangeMonthButton(
+                                type = ChangeMonthButtonType.PREVIOUS,
+                                modifier = Modifier.weight(1f),
+                                onClick = { onAction(CalendarAction.OnPreviousClick) }
+                            )
+                            ChangeMonthButton(
+                                type = ChangeMonthButtonType.NEXT,
+                                modifier = Modifier.weight(1f),
+                                onClick = { onAction(CalendarAction.OnNextClick) }
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     AnimatedContent(
@@ -126,19 +127,6 @@ private fun CalendarScreen(
                             month = state.monthData.month,
                             year = state.monthData.year
                         ),
-                        transitionSpec = {
-                            if (targetState > initialState) {
-                                ContentTransform(
-                                    targetContentEnter = slideInHorizontally { it },
-                                    initialContentExit = slideOutHorizontally { -it }
-                                )
-                            } else {
-                                ContentTransform(
-                                    targetContentEnter = slideInHorizontally { -it },
-                                    initialContentExit = slideOutHorizontally { it }
-                                )
-                            }
-                        },
                         label = "Month Data"
                     ) { date ->
                         MonthItem(
@@ -153,14 +141,17 @@ private fun CalendarScreen(
                     }
                 }
             }
-            items(
-                items = state.daysUntilUIList,
-                key = { it.title }
-            ) { item ->
-                DaysUntilComponent(
-                    daysUntilItem = item,
-                    onClick = { onAction(CalendarAction.OnDaysUntilComponentClick(item)) }
-                )
+            if (!state.isInEditMode) {
+                items(
+                    items = state.daysUntilUIList,
+                    key = { it.title }
+                ) { item ->
+                    DaysUntilComponent(
+                        modifier = Modifier.animateItem(),
+                        daysUntilItem = item,
+                        onClick = { onAction(CalendarAction.OnDaysUntilComponentClick(item)) }
+                    )
+                }
             }
         }
     }

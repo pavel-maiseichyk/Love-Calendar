@@ -1,6 +1,5 @@
 package com.paulmais.lovecalendar.presentation.calendar
 
-import com.paulmais.lovecalendar.presentation.home.components.DaysUntilItemUI
 import kotlinx.datetime.LocalDate
 
 data class CalendarState(

@@ -17,7 +17,6 @@ import com.paulmais.lovecalendar.domain.repository.UserPrefs
 import com.paulmais.lovecalendar.domain.use_case.GenerateDates
 import com.paulmais.lovecalendar.domain.use_case.GenerateDaysLeft
 import com.paulmais.lovecalendar.presentation.calendar.CalendarViewModel
-import com.paulmais.lovecalendar.presentation.home.HomeViewModel
 import com.paulmais.lovecalendar.presentation.settings.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,5 +62,4 @@ val appModule = module {
 
     viewModelOf(::CalendarViewModel)
     viewModelOf(::SettingsViewModel)
-    viewModelOf(::HomeViewModel)
 }

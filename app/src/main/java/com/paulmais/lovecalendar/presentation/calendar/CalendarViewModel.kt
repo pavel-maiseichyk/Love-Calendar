@@ -5,17 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.paulmais.lovecalendar.domain.model.DateType.*
 import com.paulmais.lovecalendar.domain.repository.MeetingsDataSource
 import com.paulmais.lovecalendar.domain.use_case.GenerateDates
 import com.paulmais.lovecalendar.domain.use_case.GenerateDaysLeft
 import com.paulmais.lovecalendar.domain.util.DateUtil
-import com.paulmais.lovecalendar.presentation.home.components.toDaysUntilItemUI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

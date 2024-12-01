@@ -1,4 +1,4 @@
-package com.paulmais.lovecalendar.presentation.home.components
+package com.paulmais.lovecalendar.presentation.calendar
 
 import com.paulmais.lovecalendar.domain.model.DaysUntilItem
 import com.paulmais.lovecalendar.domain.model.DaysUntilType

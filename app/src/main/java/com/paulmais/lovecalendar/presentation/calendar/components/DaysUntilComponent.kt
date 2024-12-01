@@ -1,4 +1,4 @@
-package com.paulmais.lovecalendar.presentation.home.components
+package com.paulmais.lovecalendar.presentation.calendar.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulmais.lovecalendar.domain.model.DaysUntilType.*
+import com.paulmais.lovecalendar.presentation.calendar.DaysUntilItemUI
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import com.paulmais.lovecalendar.presentation.ui.theme.dark_gray
 import com.paulmais.lovecalendar.presentation.ui.theme.green
