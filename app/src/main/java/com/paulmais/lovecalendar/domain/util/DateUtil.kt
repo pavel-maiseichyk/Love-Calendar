@@ -12,6 +12,12 @@ object DateUtil {
 
     fun now(): LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
+    fun nowWithFirstDayOfMonth(): LocalDate = LocalDate(
+        dayOfMonth = 1,
+        month = now().month,
+        year = now().year
+    )
+
     fun daysInMonth(month: Month, year: Int): Int {
         return if (month.number != 12)
             LocalDate(
