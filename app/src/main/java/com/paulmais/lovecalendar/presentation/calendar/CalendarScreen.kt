@@ -1,5 +1,11 @@
 package com.paulmais.lovecalendar.presentation.calendar
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.paulmais.lovecalendar.R
+import com.paulmais.lovecalendar.domain.util.DateUtil
 import com.paulmais.lovecalendar.presentation.calendar.components.CalendarTopBar
 import com.paulmais.lovecalendar.presentation.calendar.components.ChangeMonthButton
 import com.paulmais.lovecalendar.presentation.calendar.components.ChangeMonthButtonType
@@ -48,7 +55,7 @@ fun CalendarScreenRoot(
                 CalendarAction.OnSettingsClick -> onSettingsClick()
                 else -> Unit
             }
-            onSettingsClick()
+            viewModel.onAction(action)
         }
     )
 }
@@ -68,13 +75,18 @@ private fun CalendarScreen(
                 leftButtonIcon = if (state.isInEditMode) {
                     painterResource(id = R.drawable.close)
                 } else painterResource(id = R.drawable.settings),
-                onLeftButtonClick = { onAction(CalendarAction.OnUndoEditClick) },
+                onLeftButtonClick = {
+                    if (state.isInEditMode) {
+                        onAction(CalendarAction.OnUndoEditClick)
+                    } else onAction(CalendarAction.OnSettingsClick)
+                },
                 rightButtonIcon = if (state.isInEditMode) {
                     painterResource(id = R.drawable.check)
                 } else painterResource(id = R.drawable.add),
                 onRightButtonClick = {
-                    if (state.isInEditMode) onAction(CalendarAction.OnConfirmEditClick)
-                    else onAction(CalendarAction.OnEditClick)
+                    if (state.isInEditMode) {
+                        onAction(CalendarAction.OnConfirmEditClick)
+                    } else onAction(CalendarAction.OnEditClick)
                 }
             )
         }
@@ -109,15 +121,36 @@ private fun CalendarScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    MonthItem(
-                        isEditing = state.isInEditMode,
-                        month = state.monthData.month.name,
-                        year = state.monthData.year.toString(),
-                        firstDayPosition = state.monthData.firstDayOfWeekPosition,
-                        dates = state.monthData.dates,
-                        onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
-                        dayItemSize = dayItemSize
-                    )
+                    AnimatedContent(
+                        targetState = DateUtil.localDateAtStartOfMonth(
+                            month = state.monthData.month,
+                            year = state.monthData.year
+                        ),
+                        transitionSpec = {
+                            if (targetState > initialState) {
+                                ContentTransform(
+                                    targetContentEnter = slideInHorizontally { it },
+                                    initialContentExit = slideOutHorizontally { -it }
+                                )
+                            } else {
+                                ContentTransform(
+                                    targetContentEnter = slideInHorizontally { -it },
+                                    initialContentExit = slideOutHorizontally { it }
+                                )
+                            }
+                        },
+                        label = "Month Data"
+                    ) { date ->
+                        MonthItem(
+                            isEditing = state.isInEditMode,
+                            month = date.month.name,
+                            year = date.year.toString(),
+                            firstDayPosition = state.monthData.firstDayOfWeekPosition,
+                            dates = state.monthData.dates,
+                            onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
+                            dayItemSize = dayItemSize
+                        )
+                    }
                 }
             }
             items(
