@@ -3,4 +3,8 @@
     <string name="before_month">Before month</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+    <string name="settings">Settings</string>
+    <string name="special_date">Special Date</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
 </resources>

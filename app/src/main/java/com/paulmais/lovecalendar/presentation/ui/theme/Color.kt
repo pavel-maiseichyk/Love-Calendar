@@ -27,6 +27,7 @@ val green_container = Color(0xFFDFF8D7)
 val yellow_container = Color(0xFFF7F1D4)
 
 val dark_gray = Color(0xFF2C2C2C)
+val medium_gray = Color(0xFFE1E1E1)
 val light_gray = Color(0xFFE1E1E1)
 
 val appLightColors = lightColorScheme(

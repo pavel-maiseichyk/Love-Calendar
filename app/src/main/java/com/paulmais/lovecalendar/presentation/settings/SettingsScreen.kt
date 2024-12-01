@@ -15,18 +15,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.paulmais.lovecalendar.presentation.components.MyTopBar
+import com.paulmais.lovecalendar.R
 import com.paulmais.lovecalendar.presentation.settings.components.SettingsComponent
+import com.paulmais.lovecalendar.presentation.settings.components.SettingsTopBar
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingsScreenRoot(
-    viewModel: SettingsViewModel = koinViewModel()
+    viewModel: SettingsViewModel = koinViewModel(),
+    onBackClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -34,14 +39,24 @@ fun SettingsScreenRoot(
     LaunchedEffect(true) {
         viewModel.events.collect { event ->
             when (event) {
-                is SettingsEvent.ShowToast -> Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                is SettingsEvent.ShowToast -> Toast.makeText(
+                    context,
+                    event.message,
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
 
     SettingsScreen(
         state = state,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                SettingsAction.OnBackClick -> onBackClick()
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 
@@ -52,21 +67,24 @@ private fun SettingsScreen(
 ) {
     Scaffold(
         topBar = {
-            MyTopBar(text = "Settings")
+            SettingsTopBar(
+                text = stringResource(R.string.settings),
+                leftButtonIcon = painterResource(R.drawable.arrow_back),
+                onLeftButtonClick = { onAction(SettingsAction.OnBackClick) }
+            )
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
+                .background(Color.White)
+                .padding(horizontal = 16.dp, vertical = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
             SettingsComponent(
                 textFieldState = state.specialDateTextFieldState,
-                title = "Special Date",
+                title = stringResource(R.string.special_date),
                 isEditing = state.isEditingSpecialDate,
                 onComponentClick = { onAction(SettingsAction.OnDateClick) },
                 onDoneClick = { onAction(SettingsAction.OnUpdateDateClick) },

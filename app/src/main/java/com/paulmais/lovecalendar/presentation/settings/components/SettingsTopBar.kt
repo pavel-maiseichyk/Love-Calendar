@@ -1,6 +1,7 @@
-package com.paulmais.lovecalendar.presentation.calendar.components
+package com.paulmais.lovecalendar.presentation.settings.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -22,16 +23,14 @@ import com.paulmais.lovecalendar.presentation.ui.theme.light_gray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarTopBar(
+fun SettingsTopBar(
     text: String,
     leftButtonIcon: Painter,
     onLeftButtonClick: () -> Unit = {},
-    rightButtonIcon: Painter,
-    onRightButtonClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column {
-        TopAppBar(
+        CenterAlignedTopAppBar(
             title = {
                 Text(
                     text = text,
@@ -46,7 +45,7 @@ fun CalendarTopBar(
                 containerColor = Color.White,
                 titleContentColor = dark_gray
             ),
-            actions = {
+            navigationIcon = {
                 IconButton(
                     onClick = onLeftButtonClick,
                     colors = IconButtonDefaults.iconButtonColors(
@@ -56,19 +55,6 @@ fun CalendarTopBar(
                 ) {
                     Icon(
                         painter = leftButtonIcon,
-                        contentDescription = null
-                    )
-                }
-
-                IconButton(
-                    onClick = onRightButtonClick,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = dark_gray
-                    )
-                ) {
-                    Icon(
-                        painter = rightButtonIcon,
                         contentDescription = null
                     )
                 }

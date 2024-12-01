@@ -3,6 +3,10 @@ package com.paulmais.lovecalendar.presentation.calendar
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -108,7 +112,9 @@ private fun CalendarScreen(
                 Column(
                     modifier = Modifier.padding(bottom = 12.dp)
                 ) {
-                    AnimatedVisibility(visible = !state.isInEditMode) {
+                    AnimatedVisibility(
+                        visible = !state.isInEditMode
+                    ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),

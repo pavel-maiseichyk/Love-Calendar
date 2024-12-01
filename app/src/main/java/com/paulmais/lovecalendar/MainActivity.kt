@@ -50,7 +50,11 @@ class MainActivity : ComponentActivity() {
                                 onSettingsClick = { navController.navigate(Route.Settings) }
                             )
                         }
-                        composable<Route.Settings> { SettingsScreenRoot() }
+                        composable<Route.Settings> {
+                            SettingsScreenRoot(
+                                onBackClick = { navController.navigateUp() }
+                            )
+                        }
                     }
                 }
             }

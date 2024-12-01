@@ -1,5 +1,6 @@
 package com.paulmais.lovecalendar.presentation.settings.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,13 +23,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.paulmais.lovecalendar.R
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
+import com.paulmais.lovecalendar.presentation.ui.theme.dark_gray
 import com.paulmais.lovecalendar.presentation.ui.theme.jakarta
+import com.paulmais.lovecalendar.presentation.ui.theme.light_gray
+import com.paulmais.lovecalendar.presentation.ui.theme.medium_gray
 
 @Composable
 fun SettingsComponent(
@@ -42,8 +47,8 @@ fun SettingsComponent(
     onDoneClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val textStyle = TextStyle(
-        color = MaterialTheme.colorScheme.onSurface,
+    val dateTextStyle = TextStyle(
+        color = dark_gray,
         fontSize = 20.sp,
         fontFamily = jakarta,
         textAlign = TextAlign.End
@@ -54,9 +59,9 @@ fun SettingsComponent(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            .background(Color.White)
             .border(
-                border = BorderStroke(1.dp, Color.Black), shape = RoundedCornerShape(16.dp)
+                border = BorderStroke(1.dp, light_gray), shape = RoundedCornerShape(16.dp)
             )
             .animateContentSize()
             .clickable(enabled = !isEditing, onClick = onComponentClick)
@@ -70,7 +75,7 @@ fun SettingsComponent(
             Text(
                 text = title,
                 style = TextStyle(
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = dark_gray,
                     fontSize = 20.sp,
                     fontFamily = jakarta
                 )
@@ -82,30 +87,33 @@ fun SettingsComponent(
                 SpecialDateTextField(
                     modifier = Modifier.focusRequester(focusRequester),
                     textFieldState = textFieldState,
-                    textStyle = textStyle.copy(color = textStyle.color.copy(alpha = 0.5f))
+                    textStyle = dateTextStyle
                 )
-            }
-            if (!isEditing) {
+            } else {
                 Text(
                     text = date.ifEmpty { "MM.DD.YYYY" },
-                    style = textStyle
+                    style = dateTextStyle
                 )
             }
         }
-        if (isEditing) {
+        AnimatedVisibility(visible = isEditing) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 SettingsButton(
                     modifier = Modifier.weight(1f),
-                    text = "Cancel",
-                    onClick = onCancelClick
+                    text = stringResource(R.string.cancel),
+                    onClick = onCancelClick,
+                    containerColor = medium_gray,
+                    contentColor = dark_gray
                 )
                 SettingsButton(
                     modifier = Modifier.weight(1f),
-                    text = "Done",
-                    onClick = onDoneClick
+                    text = stringResource(R.string.done),
+                    onClick = onDoneClick,
+                    containerColor = dark_gray,
+                    contentColor = medium_gray
                 )
             }
         }
