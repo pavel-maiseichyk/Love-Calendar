@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,7 +25,6 @@ import com.paulmais.lovecalendar.presentation.components.MyTopBar
 import com.paulmais.lovecalendar.presentation.calendar.components.MonthItem
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import org.koin.androidx.compose.koinViewModel
-import kotlin.math.ceil
 
 @Composable
 fun CalendarScreenRoot(
@@ -66,35 +65,20 @@ private fun CalendarScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(Color.White)
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             MonthItem(
                 isEditing = state.isInEditMode,
-                isCurrent = true,
                 month = state.firstMonthData.month.name,
                 year = state.firstMonthData.year.toString(),
                 firstDayPosition = state.firstMonthData.firstDayOfWeekPosition,
-                emptyDatesAmount = state.firstMonthData.emptyDatesAmount,
                 dates = state.firstMonthData.dates,
                 onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
                 dayItemSize = dayItemSize
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            MonthItem(
-                isEditing = state.isInEditMode,
-                isCurrent = false,
-                month = state.secondMonthData.month.name,
-                year = state.secondMonthData.year.toString(),
-                firstDayPosition = state.secondMonthData.firstDayOfWeekPosition,
-                emptyDatesAmount = state.secondMonthData.emptyDatesAmount,
-                dates = state.secondMonthData.dates,
-                onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
-                dayItemSize = dayItemSize
-            )
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

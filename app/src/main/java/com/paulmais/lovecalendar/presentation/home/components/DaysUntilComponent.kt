@@ -29,7 +29,7 @@ import com.paulmais.lovecalendar.presentation.ui.theme.Cornflower_Lilac
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
 import com.paulmais.lovecalendar.presentation.ui.theme.Sidecar
 import com.paulmais.lovecalendar.presentation.ui.theme.Sindbad
-import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
+import com.paulmais.lovecalendar.presentation.ui.theme.jakarta
 
 @Composable
 fun DaysUntilComponent(
@@ -55,7 +55,7 @@ fun DaysUntilComponent(
     val textStyle = TextStyle(
         color = MaterialTheme.colorScheme.onSurface,
         fontSize = 24.sp,
-        fontFamily = montserrat
+        fontFamily = jakarta
     )
 
     val daysTextStyle = when {

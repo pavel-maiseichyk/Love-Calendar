@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
-import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
+import com.paulmais.lovecalendar.presentation.ui.theme.jakarta
 
 @Composable
 fun DaysLeftItem(
@@ -36,7 +36,7 @@ fun DaysLeftItem(
         Text(
             text = text.uppercase().trim(),
             textAlign = TextAlign.Center,
-            fontFamily = montserrat,
+            fontFamily = jakarta,
             fontSize = 32.sp,
             modifier = Modifier
                 .padding(horizontal = 24.dp, vertical = 12.dp)

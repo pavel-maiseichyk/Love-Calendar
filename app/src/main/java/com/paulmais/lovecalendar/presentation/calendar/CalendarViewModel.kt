@@ -74,6 +74,8 @@ class CalendarViewModel(
                 updateDates(state.value.meetings)
                 _state.update { it.copy(isInEditMode = false) }
             }
+
+            else -> {}
         }
     }
 
@@ -154,17 +156,12 @@ class CalendarViewModel(
         val firstDayOfWeekPosition = findFirstDayOfMonthPosition(
             month = month, year = year
         )
-        val emptyDatesAmount = findMonthEmptyDatesAmount(
-            firstDayOfWeekPosition = firstDayOfWeekPosition,
-            datesSize = monthDates.size
-        )
 
         return MonthData(
             month = month,
             year = year,
             dates = monthDates,
             firstDayOfWeekPosition = firstDayOfWeekPosition,
-            emptyDatesAmount = emptyDatesAmount
         )
     }
 

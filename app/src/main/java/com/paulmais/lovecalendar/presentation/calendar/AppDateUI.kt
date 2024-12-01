@@ -1,9 +1,7 @@
 package com.paulmais.lovecalendar.presentation.calendar
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.paulmais.lovecalendar.domain.model.AppDate
 import com.paulmais.lovecalendar.domain.model.DateType
 import com.paulmais.lovecalendar.domain.model.DateType.FUTURE
@@ -11,10 +9,18 @@ import com.paulmais.lovecalendar.domain.model.DateType.MEETING
 import com.paulmais.lovecalendar.domain.model.DateType.PAST
 import com.paulmais.lovecalendar.domain.model.DateType.SPECIAL
 import com.paulmais.lovecalendar.domain.model.DateType.TODAY
+import com.paulmais.lovecalendar.presentation.ui.theme.blue
+import com.paulmais.lovecalendar.presentation.ui.theme.blue_container
+import com.paulmais.lovecalendar.presentation.ui.theme.dark_gray
 import com.paulmais.lovecalendar.presentation.ui.theme.futureMeetingColor
+import com.paulmais.lovecalendar.presentation.ui.theme.green
+import com.paulmais.lovecalendar.presentation.ui.theme.green_container
 import com.paulmais.lovecalendar.presentation.ui.theme.pastMeetingColor
+import com.paulmais.lovecalendar.presentation.ui.theme.red
+import com.paulmais.lovecalendar.presentation.ui.theme.red_container
 import com.paulmais.lovecalendar.presentation.ui.theme.specialColor
-import com.paulmais.lovecalendar.presentation.ui.theme.todayColor
+import com.paulmais.lovecalendar.presentation.ui.theme.yellow
+import com.paulmais.lovecalendar.presentation.ui.theme.yellow_container
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 
@@ -22,21 +28,29 @@ import kotlinx.datetime.Month
 data class AppDateUI(
     val date: LocalDate = LocalDate(year = 1975, month = Month(1), dayOfMonth = 1),
     val types: Set<DateType> = setOf(),
-    val backgroundColor: Color = Color.Black,
+    val containerColor: Color = Color.White,
+    val contentColor: Color = Color.Black,
     val mainIndicatorColor: Color? = null,
-    val additionalIndicatorColor: Color? = null,
-    val border: BorderStroke? = null
+    val additionalIndicatorColor: Color? = null
 )
 
 fun AppDate.toAppDateUI(): AppDateUI {
-    val backgroundColor = when {
-        TODAY in types -> todayColor
-        SPECIAL in types -> specialColor
-        MEETING in types && FUTURE in types -> futureMeetingColor
-        MEETING in types && PAST in types -> pastMeetingColor
-        PAST in types -> Color.Transparent
-        else -> Color.White
+    val containerColor = when {
+        TODAY in types -> yellow_container
+        SPECIAL in types -> red_container
+        MEETING in types && FUTURE in types -> green_container
+        MEETING in types && PAST in types -> blue_container
+        else -> Color.Transparent
     }
+
+    val contentColor = when {
+        TODAY in types -> yellow
+        SPECIAL in types -> red
+        MEETING in types && FUTURE in types -> green
+        MEETING in types && PAST in types -> blue
+        else -> dark_gray
+    }
+
     val mainIndicatorColor = when {
         PAST in types && MEETING in types && SPECIAL in types -> pastMeetingColor
         TODAY in types && MEETING in types -> futureMeetingColor
@@ -47,15 +61,12 @@ fun AppDate.toAppDateUI(): AppDateUI {
     val additionalIndicatorColor =
         if (TODAY in types && SPECIAL in types) specialColor else null
 
-    val border =
-        if (types.singleOrNull() == PAST) null else BorderStroke(1.dp, Color.Black)
-
     return AppDateUI(
-        date = this.date,
-        types = this.types,
-        backgroundColor = backgroundColor,
+        date = date,
+        types = types,
+        containerColor = containerColor,
+        contentColor = contentColor,
         mainIndicatorColor = mainIndicatorColor,
-        additionalIndicatorColor = additionalIndicatorColor,
-        border = border
+        additionalIndicatorColor = additionalIndicatorColor
     )
 }

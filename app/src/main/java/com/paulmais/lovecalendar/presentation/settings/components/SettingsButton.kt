@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
-import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
+import com.paulmais.lovecalendar.presentation.ui.theme.jakarta
 
 @Composable
 fun SettingsButton(
@@ -38,7 +38,7 @@ fun SettingsButton(
             textAlign = TextAlign.Center,
             text = text,
             fontSize = 16.sp,
-            fontFamily = montserrat
+            fontFamily = jakarta
         )
     }
 }

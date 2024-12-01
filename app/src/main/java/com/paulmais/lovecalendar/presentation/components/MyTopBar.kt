@@ -13,13 +13,11 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
-import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
-import java.util.Locale
+import com.paulmais.lovecalendar.presentation.ui.theme.jakarta
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +44,7 @@ fun MyTopBar(
         title = {
             Text(
                 text = text,
-                fontFamily = montserrat,
+                fontFamily = jakarta,
                 fontSize = 28.sp,
             )
         },

@@ -16,6 +16,19 @@ val futureMeetingColor = Sindbad
 val specialColor = Cornflower_Lilac
 val todayColor = Sidecar
 
+val red = Color(0xFFD3455A)
+val blue = Color(0xFF2D9BD2)
+val green = Color(0xFF59AB39)
+val yellow = Color(0xFFCDB332)
+
+val red_container = Color(0xFFF7D4DA)
+val blue_container = Color(0xFFD4EBF7)
+val green_container = Color(0xFFDFF8D7)
+val yellow_container = Color(0xFFF7F1D4)
+
+val dark_gray = Color(0xFF2C2C2C)
+val light_gray = Color(0xFFE1E1E1)
+
 val appLightColors = lightColorScheme(
     primary = Sidecar,
     secondary = Cameo,

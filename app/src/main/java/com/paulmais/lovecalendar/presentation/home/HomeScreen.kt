@@ -4,9 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,7 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.paulmais.lovecalendar.presentation.components.MyTopBar
 import com.paulmais.lovecalendar.presentation.home.components.DaysUntilComponent
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
-import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
+import com.paulmais.lovecalendar.presentation.ui.theme.jakarta
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -52,7 +50,7 @@ private fun HomeScreen(
             ) {
                 Text(
                     text = "Nothing here yet!",
-                    fontFamily = montserrat,
+                    fontFamily = jakarta,
                     fontSize = 20.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )

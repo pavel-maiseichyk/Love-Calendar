@@ -5,17 +5,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.paulmais.lovecalendar.R
 
-val montserrat = FontFamily(
+val jakarta = FontFamily(
     Font(
-        resId = R.font.montserrat_normal,
+        resId = R.font.jakarta_regular,
         weight = FontWeight.Normal
     ),
     Font(
-        resId = R.font.montserrat_light,
-        weight = FontWeight.Light
-    ),
-    Font(
-        resId = R.font.montserrat_semibold,
+        resId = R.font.jakarta_semibold,
         weight = FontWeight.SemiBold
     )
 )

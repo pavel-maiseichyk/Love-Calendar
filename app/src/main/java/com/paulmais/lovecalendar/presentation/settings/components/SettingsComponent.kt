@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulmais.lovecalendar.presentation.ui.theme.LoveCalendarTheme
-import com.paulmais.lovecalendar.presentation.ui.theme.montserrat
+import com.paulmais.lovecalendar.presentation.ui.theme.jakarta
 
 @Composable
 fun SettingsComponent(
@@ -45,7 +45,7 @@ fun SettingsComponent(
     val textStyle = TextStyle(
         color = MaterialTheme.colorScheme.onSurface,
         fontSize = 20.sp,
-        fontFamily = montserrat,
+        fontFamily = jakarta,
         textAlign = TextAlign.End
     )
     val focusRequester = remember { FocusRequester() }
@@ -72,7 +72,7 @@ fun SettingsComponent(
                 style = TextStyle(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 20.sp,
-                    fontFamily = montserrat
+                    fontFamily = jakarta
                 )
             )
             if (isEditing) {
