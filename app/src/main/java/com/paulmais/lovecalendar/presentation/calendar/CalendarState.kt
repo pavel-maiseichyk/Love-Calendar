@@ -1,14 +1,15 @@
 package com.paulmais.lovecalendar.presentation.calendar
 
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
 
 data class CalendarState(
-    val monthData: MonthData = MonthData(),
-    val meetings: List<LocalDate> = emptyList(),
-    val specialDayNumber: Int = 0,
+    val isLoading: Boolean = true,
     val isInEditMode: Boolean = false,
+    val month: Month = Month(1),
+    val year: Int = 0,
+    val appDateUIList: List<AppDateUI> = emptyList(),
+    val firstDayOfWeekPosition: Int = 0, // Positions in a week range from 0 to 6
     val daysLeftText: String = "...",
     val daysUntilUIList: List<DaysUntilItemUI> = emptyList(),
-    val isLoading: Boolean = true
 )
 

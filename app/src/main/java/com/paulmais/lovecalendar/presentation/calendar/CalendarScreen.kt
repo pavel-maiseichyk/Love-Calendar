@@ -2,13 +2,6 @@ package com.paulmais.lovecalendar.presentation.calendar
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -136,8 +129,8 @@ private fun CalendarScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     AnimatedContent(
                         targetState = DateUtil.localDateAtStartOfMonth(
-                            month = state.monthData.month,
-                            year = state.monthData.year
+                            month = state.month,
+                            year = state.year
                         ),
                         label = "Month Data"
                     ) { date ->
@@ -145,8 +138,8 @@ private fun CalendarScreen(
                             isEditing = state.isInEditMode,
                             month = date.month.name,
                             year = date.year.toString(),
-                            firstDayPosition = state.monthData.firstDayOfWeekPosition,
-                            dates = state.monthData.dates,
+                            firstDayPosition = state.firstDayOfWeekPosition,
+                            dates = state.appDateUIList,
                             onDateTap = { onAction(CalendarAction.OnDateTap(it)) },
                             dayItemSize = dayItemSize
                         )

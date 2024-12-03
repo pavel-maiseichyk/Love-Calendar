@@ -9,13 +9,9 @@ import kotlinx.datetime.toLocalDateTime
 
 object DateUtil {
 
-    fun now(): LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val baseDate = LocalDate(year = 0, monthNumber = 1, dayOfMonth = 1)
 
-    fun nowAtStartOfMonth(): LocalDate = LocalDate(
-        dayOfMonth = 1,
-        month = now().month,
-        year = now().year
-    )
+    fun now(): LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
     fun localDateAtStartOfMonth(month: Month, year: Int): LocalDate = LocalDate(
         dayOfMonth = 1,
