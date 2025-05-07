@@ -1,31 +1,63 @@
-# 📱 Love Calendar
+# Love Calendar
 
-**Welcome to Love Calendar!**  
-This app is designed to help couples in long-distance relationships keep track of the days remaining until their next meeting.
+[![Kotlin](https://img.shields.io/badge/kotlin-1.9.0-purple.svg)](https://kotlinlang.org)
+[![Jetpack Compose](https://img.shields.io/badge/jetpack%20compose-2025.04.01-g.svg)](https://developer.android.com/jetpack/compose)
+## 🚀 Overview
 
-## 🚀 Features
-- **Plan meetings with your special ones:** You and your partner can choose the date of your next meeting and see how many days are left in the app.
-- **Keep track of your special dates:** Add special dates like anniversaries to be highlighted and remembered in the app.
+A thoughtfully designed mobile application for couples in long-distance relationships to keep track of days until their next meeting and special dates.
 
-## 🛠️ Technologies Used
-Love Calendar is built with modern, efficient, and scalable technologies to ensure both high performance and maintainability:
--   **Kotlin**  — Primary language for concise and expressive code.
--   **MVI**  — Architecture for clear separation of concerns.
--   **Clean Architecture**  — Ensures maintainability and scalability.
--   **Jetpack Compose**  — Declarative UI toolkit for building interfaces.
--   **Room**  — Local database management with SQLite.
--   **Koin**  — Lightweight dependency injection framework.
--   **Material 3**  — Modern design components for UI.
--   **Coroutines & Flows**  — Handles asynchronous tasks and reactive data.
+## ✨ Features
 
-## 🚀 How to Run the Project
-1.  Clone the repository:
-    `git clone https://github.com/pavelmaiseichyk/LoveCalendar.git`
-2.  Open the project in Android Studio.
-3.  Run the app on an Android device or emulator.
+- **💞 Connect with Your Partner**
+    - Plan and countdown to your next meeting
+    - Track special dates and anniversaries
 
-## 📸 Screenshots
+- **🏗️ Modern Architecture**
+    - Clean Architecture principles
+    - MVI pattern for predictable state management
+    - Offline-first approach after login
+    - Scalable and maintainable codebase
+
+- **🎨 Beautiful UI**
+    - Built with Jetpack Compose
+    - Material 3 design language
+    - Smooth animations and transitions
+    - Intuitive user experience
+
+- **🔒 Data Management**
+    - Local storage with Room database
+    - Preferences and secure data with DataStore
+    - Efficient coroutines and flows
+
+## 🔧 Tech Stack
+
+- **UI:** Jetpack Compose, Material 3
+- **Architecture:** Clean Architecture, MVI
+- **Storage:** Room, DataStore
+- **Dependency Injection:** Koin
+- **Concurrency:** Coroutines, Flows
+- **Language:** 100% Kotlin
+
+## 📱 Screenshots
+
 ![screenshots](screenshots.png)
 
-## 📝 License
-This project is licensed under the CC BY-NC 4.0 License - see the [LICENSE](LICENSE.txt) file for details.
+## 💡 Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/pavel-maiseichyk/love-calendar.git
+
+# Navigate to project directory
+cd love-calendar
+
+# Open in Android Studio and run on a device or emulator
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.

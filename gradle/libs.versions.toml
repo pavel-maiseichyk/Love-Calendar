@@ -1,25 +1,31 @@
 [versions]
-agp = "8.3.1"
-kotlin = "1.9.0"
-ksp = "1.9.0-1.0.13"
-coreKtx = "1.13.1"
+agp = "8.10.0"
+assertk = "0.28.1"
 junit = "4.13.2"
+kotlin = "2.1.20"
+ksp = "2.1.20-1.0.32"
+kotlinxCoroutinesTest = "1.10.1"
+coreKtx = "1.16.0"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.4"
-activityCompose = "1.9.1"
-composeBom = "2024.09.03"
-kotlinDateTime = "0.5.0"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.10.1"
+composeBom = "2025.04.01"
+kotlinDateTime = "0.6.2"
 koin-bom = "3.5.6"
-room = "2.6.1"
-datastore = "1.1.1"
-navigation = "2.8.2"
-serialization = "1.6.3"
-splashscreen = "1.0.0"
+room = "2.7.1"
+datastore = "1.1.0"
+navigation = "2.8.9"
+serialization = "1.8.0"
+splashscreen = "1.0.1"
+ktor = "3.1.2"
+slf4j_version = "1.7.36"
+turbine = "1.2.0"
+junit-bom = "5.9.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -32,19 +38,34 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+junit = { module = "junit:junit", version.ref = "junit" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+jupiter-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+jupiter-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
 kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinDateTime" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
+koin-test-junit5 = { module = "io.insert-koin:koin-test-junit5", version.ref = "koin-bom" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+slf4j-android = { module = "org.slf4j:slf4j-android", version.ref = "slf4j_version" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

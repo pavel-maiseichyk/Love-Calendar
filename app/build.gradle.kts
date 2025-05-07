@@ -1,22 +1,23 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.paulmais.lovecalendar"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.paulmais.lovecalendar"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = 26
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.paulmais.lovecalendar.KtorTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -41,18 +42,16 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
         }
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -62,6 +61,17 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.jupiter.junit.jupiter.api)
+    testRuntimeOnly(libs.jupiter.junit.jupiter.engine)
+
+    testImplementation(libs.assertk)
+    androidTestImplementation(libs.assertk)
+
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -72,6 +82,7 @@ dependencies {
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.compose)
+    androidTestImplementation(libs.koin.test.junit5)
 
     implementation(libs.kotlin.datetime)
 
@@ -83,4 +94,15 @@ dependencies {
     implementation(libs.androidx.navigation)
 
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.slf4j.android)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
